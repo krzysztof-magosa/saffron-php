@@ -1,0 +1,11 @@
+{
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "4.2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "KM\\Saffron\\": "src/Saffron"
+        }
+    }
+}
