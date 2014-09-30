@@ -1,5 +1,15 @@
 {
+    "name": "krzysztof-magosa/saffron",
     "type": "library",
+    "description": "Tiny PHP router",
+    "keywords": ["router", "routing", "tiny"],
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Krzysztof Magosa",
+            "email": "krzysztof@magosa.pl"
+        }
+    ],
     "require-dev": {
         "phpunit/phpunit": "4.2.*"
     },
