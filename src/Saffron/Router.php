@@ -80,7 +80,7 @@ class Router
             );
         }
 
-        return '@'.$regex.'@Usi';
+        return '@^'.$regex.'$@Usi';
     }
 
     public function dispatch(Request $request)
