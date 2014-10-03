@@ -17,8 +17,20 @@ namespace KM\Saffron;
 
 class Request
 {
+    protected $domain;
     protected $uri;
     protected $method;
+
+    public function getDomain()
+    {
+        return $this->domain;
+    }
+
+    public function setDomain($domain)
+    {
+        $this->domain = $domain;
+        return $this;
+    }
 
     public function getUri()
     {
