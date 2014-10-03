@@ -23,10 +23,28 @@ class Router
     public function append(array $route)
     {
         $this->prepareRoute($route);
+        $this->compileRegex($route);
         $this->routes[] = $route;
 
         if ($route['name']) {
             $this->namedRoutes[$route['name']] = $route;
+        }
+
+        // Magic for optional parameters
+        // Go through optional parameters, and cut off url behind them
+        // @TODO protect against impossible scenarios
+        foreach (array_reverse($route['placeholders']) as $placeholder) {
+            if (in_array($placeholder, array_keys($route['default']))) {
+                $nested = $route;
+                $nested['uri'] = preg_replace(
+                    '@.{0,1}\{'.$placeholder.'\}.*$@Usi',
+                    '',
+                    $nested['uri']
+                );
+                
+                $this->compileRegex($nested);
+                $this->routes[] = $nested;
+            }
         }
         
         return $this;
@@ -42,6 +60,17 @@ class Router
             $route['require'] = [];
         }
 
+        if (!isset($route['default'])) {
+            $route['default'] = [];
+        }
+
+        if (isset($route['domain'])) {
+            $route['domain'] = (array)$route['domain'];
+        }
+        else {
+            $route['domain'] = null;
+        }
+
         if (isset($route['method'])) {
             $route['method'] = (array)$route['method'];
         }
@@ -53,16 +82,14 @@ class Router
             $route['target'] = null;
         }
 
-        $route['regex'] = $this->compileRegex($route);
+        preg_match_all('@{(.+)}@Usi', $route['uri'], $placeholders);
+        $route['placeholders'] = $placeholders[1];
     }
 
-    protected function compileRegex(array $route)
+    protected function compileRegex(array &$route)
     {
-        preg_match_all('@{(.+)}@Usi', $route['uri'], $placeholders);
-        $placeholders = $placeholders[1];
-
         $regex = $route['uri'];
-        foreach ($placeholders as $placeholder) {
+        foreach ($route['placeholders'] as $placeholder) {
             if (isset($route['require'][$placeholder])) {
                 $require = $route['require'][$placeholder];
             } else {
@@ -80,7 +107,7 @@ class Router
             );
         }
 
-        return '@^'.$regex.'$@Usi';
+        $route['regex'] = '@^'.$regex.'$@Usi';
     }
 
     public function dispatch(Request $request)
@@ -90,11 +117,19 @@ class Router
                 continue;
             }
 
+            if ($route['domain'] && !in_array($request->getDomain(), $route['domain'])) {
+                continue;
+            }
+
             if (!preg_match($route['regex'], $request->getUri(), $match)) {
                 continue;
             }
 
-            $matchedRoute = new MatchedRoute($route['target'], $match);
+            $matchedRoute = new MatchedRoute(
+                $route['target'],
+                array_merge($route['default'], $match)
+            );
+
             return $matchedRoute;
         }
     }
