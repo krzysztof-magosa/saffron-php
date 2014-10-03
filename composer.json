@@ -14,8 +14,8 @@
         "phpunit/phpunit": "4.2.*"
     },
     "autoload": {
-        "psr-4": {
-            "KM\\Saffron\\": "src/Saffron"
+        "psr-0": {
+            "KM\\Saffron\\": "src/"
         }
     }
 }
