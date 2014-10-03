@@ -27,11 +27,11 @@ $request
 // Controller
 class Controller
 {
-    public function editAction($matched)
+    public function editAction($entity, $id)
     {
         echo "Triggered edit!\n";
-        echo sprintf("Entity: %s\n", $matched->getParam('entity'));
-        echo sprintf("Id:     %s\n", $matched->getParam('id'));
+        echo sprintf("Entity: %s\n", $entity);
+        echo sprintf("Id:     %s\n", $id);
     }
 }
 
