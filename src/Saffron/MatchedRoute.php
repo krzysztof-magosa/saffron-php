@@ -31,18 +31,36 @@ class MatchedRoute
         return isset($this->parameters[$name]) ? $this->parameters[$name] : $default;
     }
 
+    protected function executeClosure()
+    {
+        $closure = $this->target;
+        $closure($this);
+    }
+
+    protected function executeController()
+    {
+        $controllerName = $this->target[0];
+        $actionName = $this->target[1];
+
+        $controller = new $controllerName();
+
+        $reflection = new \ReflectionClass($controllerName);
+        $method = $reflection->getMethod($actionName);
+        $arguments = [];
+        foreach ($method->getParameters() as $parameter) {
+            $arguments[] = $this->getParam($parameter->getName(), null);
+        }
+
+        $method->invokeArgs($controller, $arguments);
+    }
+
     public function execute()
     {
         if ($this->target instanceof \Closure) {
-            $closure = $this->target;
-            $closure($this);
+            $this->executeClosure();
         }
         else {
-            $controllerName = $this->target[0];
-            $actionName = $this->target[1];
-
-            $controller = new $controllerName();
-            $controller->$actionName($this);
+            $this->executeController();
         }
     }
 }
