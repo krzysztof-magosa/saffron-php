@@ -18,7 +18,19 @@ namespace KM\Saffron;
 class RouterFactory
 {
     protected $cacheKey;
+    protected $cacheTtl = 600;
     protected $routes = [];
+
+    public function setCacheTtl($ttl)
+    {
+        $this->cacheTtl = $ttl;
+        return $this;
+    }
+
+    public function getCacheTtl()
+    {
+        return $this->cacheTtl;
+    }
 
     public function setCacheKey($key)
     {
@@ -51,7 +63,7 @@ class RouterFactory
 
             if (!$success) {
                 $data = $closure();
-                apc_store($key, $data, 600);
+                apc_store($key, $data, $this->getCacheTtl());
             }
         }
         else {
