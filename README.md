@@ -3,6 +3,13 @@
 Saffron is a tiny router for your PHP applications.  
 The main goal is to make it as simple as it can be.
 
+## Features
+* No dependencies
+* High performance
+* Method condition support
+* Domain condition support
+* Routes with optional parameters
+
 ## Installation
 You can easily install Saffron by adding below requirement to your composer.json
 ```json
