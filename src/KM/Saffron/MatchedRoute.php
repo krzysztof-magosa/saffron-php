@@ -31,6 +31,11 @@ class MatchedRoute
         return isset($this->parameters[$name]) ? $this->parameters[$name] : $default;
     }
 
+    public function getParams()
+    {
+        return $this->parameters;
+    }
+
     protected function executeClosure()
     {
         $closure = $this->target;
