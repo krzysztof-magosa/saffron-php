@@ -15,7 +15,7 @@ You can easily install Saffron by adding below requirement to your composer.json
 ```json
 {
     "require": {
-        "krzysztof-magosa/saffron": "0.1.*"
+        "krzysztof-magosa/saffron": "0.2.*"
     }
 }
 ```
@@ -51,7 +51,7 @@ $router = $factory->build();
 // Create Request object
 $request = new Request();
 $request
-    ->setUri($_SERVER['REQUEST_URI'])
+    ->setUri(explode('?', $_SERVER['REQUEST_URI'])[0]) // remove possible query string
     ->setMethod($_SERVER['REQUEST_METHOD']);
 
 // Dispatch request
