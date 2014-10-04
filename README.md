@@ -9,6 +9,7 @@ The main goal is to make it as simple as it can be.
 * Method condition support
 * Domain condition support
 * Routes with optional parameters
+* APC caching of Router object
 
 ## Installation
 You can easily install Saffron by adding below requirement to your composer.json
@@ -21,6 +22,7 @@ You can easily install Saffron by adding below requirement to your composer.json
 ```
 
 ## Example
+### index.php file
 ```php
 require 'vendor/autoload.php';
 
@@ -29,22 +31,7 @@ use KM\Saffron\RouterFactory;
 
 // Configure routing
 $factory = new RouterFactory();
-    ->setRoutes(
-        [
-            [
-                'name' => 'show',
-                'uri' => '/show/{entity}/{id}',
-                'require' => [
-                    'entity' => '\w+',
-                    'id' => '\d+',
-                ],
-                'default' => [
-                    'id' => 123,
-                ],
-                'target' => ['Controller', 'showAction'],
-            ],
-        ]
-    );
+    ->setRoutes(include 'routes.php');
 
 $router = $factory->build();
 
@@ -66,7 +53,27 @@ else {
 }
 ```
 
+### routes.php file
 ```php
+return [
+    [
+        'name' => 'show',
+        'uri' => '/show/{entity}/{id}',
+        'require' => [
+            'entity' => '\w+',
+            'id' => '\d+',
+        ],
+        'default' => [
+            'id' => 123,
+        ],
+        'target' => ['Test\Controller', 'showAction'],
+    ],
+];
+```
+
+### Controller.php file
+```php
+namespace Test;
 class Controller
 {
     public function showAction($entity, $id)
