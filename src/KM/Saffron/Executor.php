@@ -11,7 +11,8 @@ class Executor
         $method = $reflection->getMethod($actionName);
         $arguments = [];
         foreach ($method->getParameters() as $parameter) {
-            $arguments[] = $this->getParam($parameter->getName(), null);
+            $name = $parameter->getName();
+            $arguments[] = isset($parameters[$name]) ? $parameters[$name] : null;
         }
 
         $method->invokeArgs($controller, $arguments);
