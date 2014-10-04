@@ -15,17 +15,17 @@
  */
 class FactoryTest extends PHPUnit_Framework_TestCase
 {
-    public function testAutoNamespace()
+    public function testAutoKey()
     {
         $factory = new \KM\Saffron\RouterFactory();
-        $this->assertEquals(40, strlen($factory->getCacheNamespace()));
+        $this->assertEquals(40, strlen($factory->getCacheKey()));
     }
 
-    public function testSetNamespace()
+    public function testSetKey()
     {
         $factory = new \KM\Saffron\RouterFactory();
-        $factory->setCacheNamespace('s9RsJpGcJ27LfUxuEWC246rY34ipUC');
-        $this->assertEquals('s9RsJpGcJ27LfUxuEWC246rY34ipUC', $factory->getCacheNamespace());
+        $factory->setCacheKey('s9RsJpGcJ27LfUxuEWC246rY34ipUC');
+        $this->assertEquals('s9RsJpGcJ27LfUxuEWC246rY34ipUC', $factory->getCacheKey());
     }
 
     public function testReturnedType()
