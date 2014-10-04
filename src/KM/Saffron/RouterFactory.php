@@ -55,6 +55,13 @@ class RouterFactory
         return $this;
     }
 
+    /**
+     * If possible tries to use APC to store result of $closure.
+     * If APC is not installed, just returns result of $closure.
+     * 
+     * @param \Closure $closure Closure to be cached.
+     * @return mixed The result of closure.
+     */
     protected function cache(\Closure $closure)
     {
         if (extension_loaded('apc')) {
@@ -73,6 +80,11 @@ class RouterFactory
         return $data;
     }
 
+    /**
+     * Returns builded object, if possible from cache.
+     * 
+     * @return \KM\Saffron\Router
+     */
     public function build()
     {
         return $this->cache(

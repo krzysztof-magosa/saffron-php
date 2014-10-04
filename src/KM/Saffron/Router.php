@@ -20,6 +20,12 @@ class Router
     protected $routes = [];
     protected $namedRoutes = [];
 
+    /**
+     * Appends route to router.
+     * 
+     * @param array $route Route to be added.
+     * @return \KM\Saffron\Router $this for chaining.
+     */
     public function append(array $route)
     {
         $this->prepareRoute($route);
@@ -50,6 +56,11 @@ class Router
         return $this;
     }
 
+    /**
+     * Normalizes route by adding missing fields etc.
+     * 
+     * @param array &route
+     */
     protected function prepareRoute(array &$route)
     {
         if (!isset($route['name'])) {
@@ -86,6 +97,11 @@ class Router
         $route['placeholders'] = $placeholders[1];
     }
 
+    /**
+     * Compiles regex for gives route.
+     * 
+     * @param array $route Route to be compiled.
+     */
     protected function compileRegex(array &$route)
     {
         $regex = $route['uri'];
@@ -110,6 +126,12 @@ class Router
         $route['regex'] = '@^'.$regex.'$@Usi';
     }
 
+    /**
+     * Dispatches the request.
+     * 
+     * @param \KM\Saffron\Request $request Request to be dispatched.
+     * @return mixed MatchedRoute object or null
+     */
     public function dispatch(Request $request)
     {
         $method = $request->getMethod();
@@ -138,6 +160,13 @@ class Router
         }
     }
 
+    /**
+     * Builds the link for named route.
+     * 
+     * @param string $name Name of route
+     * @param array $parameters Parameters to be put into link
+     * @return string Builded link
+     */
     public function assemble($name, array $parameters = [])
     {
         if (!isset($this->namedRoutes[$name])) {
