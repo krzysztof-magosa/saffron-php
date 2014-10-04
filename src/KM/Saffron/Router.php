@@ -112,16 +112,20 @@ class Router
 
     public function dispatch(Request $request)
     {
+        $method = $request->getMethod();
+        $domain = $request->getDomain();
+        $uri = $request->getUri();
+
         foreach ($this->routes as $route) {
-            if ($route['method'] && !in_array($request->getMethod(), $route['method'])) {
+            if ($route['method'] && !in_array($method, $route['method'])) {
                 continue;
             }
 
-            if ($route['domain'] && !in_array($request->getDomain(), $route['domain'])) {
+            if ($route['domain'] && !in_array($domain, $route['domain'])) {
                 continue;
             }
 
-            if (!preg_match($route['regex'], $request->getUri(), $match)) {
+            if (!preg_match($route['regex'], $uri, $match)) {
                 continue;
             }
 
