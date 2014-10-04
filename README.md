@@ -1,4 +1,4 @@
-# Saffron PHP Router
+# Saffron PHP Router [![Build Status](https://travis-ci.org/krzysztof-magosa/saffron-php.svg?branch=master)](https://travis-ci.org/krzysztof-magosa/saffron-php)
 
 Saffron is a tiny router for your PHP applications.  
 The main goal is to make it as simple as it can be.
