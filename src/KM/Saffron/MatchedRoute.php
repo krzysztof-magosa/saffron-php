@@ -39,19 +39,11 @@ class MatchedRoute
 
     protected function executeController()
     {
-        $controllerName = $this->target[0];
-        $actionName = $this->target[1];
-
-        $controller = new $controllerName();
-
-        $reflection = new \ReflectionClass($controllerName);
-        $method = $reflection->getMethod($actionName);
-        $arguments = [];
-        foreach ($method->getParameters() as $parameter) {
-            $arguments[] = $this->getParam($parameter->getName(), null);
-        }
-
-        $method->invokeArgs($controller, $arguments);
+        return Executor::executeController(
+            $this->target[0],
+            $this->target[1],
+            $this->getParams()
+        );
     }
 
     public function execute()
