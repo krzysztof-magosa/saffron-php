@@ -31,7 +31,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     public function testReturnedType()
     {
         $factory = new \KM\Saffron\RouterFactory();
-        $router = $factory->build();
+        $router = $factory->build(function ($router) {});
         $this->assertInstanceOf('\KM\Saffron\Router', $router);
     }
 }
