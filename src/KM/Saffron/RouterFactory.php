@@ -49,12 +49,6 @@ class RouterFactory
         return $this->cacheKey;
     }
 
-    public function setRoutes(array $routes)
-    {
-        $this->routes = $routes;
-        return $this;
-    }
-
     /**
      * If possible tries to use APC to store result of $closure.
      * If APC is not installed, just returns result of $closure.
@@ -85,14 +79,12 @@ class RouterFactory
      * 
      * @return \KM\Saffron\Router
      */
-    public function build()
+    public function build(\Closure $init)
     {
         return $this->cache(
-            function () {
+            function () use ($init) {
                 $router = new \KM\Saffron\Router();
-                foreach ($this->routes as $route) {
-                    $router->append($route);
-                }
+                $init($router);
 
                 return $router;
             }
