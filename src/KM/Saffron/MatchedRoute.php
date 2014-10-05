@@ -36,28 +36,12 @@ class MatchedRoute
         return $this->parameters;
     }
 
-    protected function executeClosure()
-    {
-        $closure = $this->target;
-        $closure($this);
-    }
-
-    protected function executeController()
+    public function execute()
     {
         return Executor::executeController(
             $this->target[0],
             $this->target[1],
             $this->getParams()
         );
-    }
-
-    public function execute()
-    {
-        if ($this->target instanceof \Closure) {
-            $this->executeClosure();
-        }
-        else {
-            $this->executeController();
-        }
     }
 }
