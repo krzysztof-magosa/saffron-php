@@ -46,7 +46,7 @@ $router
                 'entity' => '\w+',
                 'id' => '\d+',
             ],
-            'target' => function ($matched) {}
+            'target' => ['Controller', 'showAction'],
         ]
     )
     ->append(
