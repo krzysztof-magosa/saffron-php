@@ -37,31 +37,33 @@ class Controller
 
 // Configure routes
 $factory = new \KM\Saffron\RouterFactory();
-$factory
-    ->setRoutes(
-        [
-            [
-                'name' => 'show',
-                'uri' => '/show/{entity}/{id}',
-                'require' => [
-                    'entity' => '\w+',
-                    'id' => '\d+',
-                ],
-                'target' => ['Controller', 'showAction'],
-            ],
-            [
-                'name' => 'edit',
-                'uri' => '/edit/{entity}/{id}',
-                'require' => [
-                    'entity' => '\w+',
-                    'id' => '\d+',
-                ],
-                'target' => ['Controller', 'editAction'],
-            ]
-        ]
-    );
-
-$router = $factory->build();
+$router = $factory->build(
+    function ($router) {
+        $router
+            ->append(
+                [
+                    'name' => 'show',
+                    'uri' => '/show/{entity}/{id}',
+                    'require' => [
+                        'entity' => '\w+',
+                        'id' => '\d+',
+                    ],
+                    'target' => ['Controller', 'showAction'],
+                ]
+            )
+            ->append(
+                [
+                    'name' => 'edit',
+                    'uri' => '/edit/{entity}/{id}',
+                    'require' => [
+                        'entity' => '\w+',
+                        'id' => '\d+',
+                    ],
+                    'target' => ['Controller', 'editAction'],
+                ]
+            );
+    }
+);
 
 // Dispatch and execute route
 $matched = $router->dispatch($request);
