@@ -9,7 +9,7 @@ The main goal is to make it as simple as it can be.
 * Method condition support
 * Domain condition support
 * Routes with optional parameters
-* APC caching of Router object
+* APC caching of lazy initialized Router object
 
 ## Installation
 You can easily install Saffron by adding below requirement to your composer.json
