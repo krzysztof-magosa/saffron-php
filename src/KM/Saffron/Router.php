@@ -51,10 +51,18 @@ class Router
 
         // Magic for optional parameters
         // Go through optional parameters, and cut off url behind them
-        // @TODO protect against impossible scenarios
+        $nested = $route;
         foreach (array_reverse($route['placeholders']) as $placeholder) {
             if (in_array($placeholder, array_keys($route['default']))) {
-                $nested = $route;
+                if (!preg_match('@{'.$placeholder.'}$@Usi', $nested['uri'])) {
+                    throw new \LogicException(
+                        sprintf(
+                            'It makes no sense to set default value for value %s in the middle of uri',
+                            $placeholder
+                        )
+                    );
+                }
+                
                 $nested['uri'] = preg_replace(
                     '@.{0,1}\{'.$placeholder.'\}.*$@Usi',
                     '',

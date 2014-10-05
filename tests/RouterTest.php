@@ -113,4 +113,21 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $router->append(['name' => 'home', 'uri' => '/']);
         $router->append(['name' => 'home', 'uri' => '/home']);
     }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage It makes no sense to set default value for value place in the middle of uri
+     */
+    public function testDefaultValueInMiddle()
+    {
+        $router = new \KM\Saffron\Router();
+        $router->append(
+            [
+                'uri' => '/something/{place}/somethingElse',
+                'default' => [
+                    'place' => 'defaultValue',
+                ]
+            ]
+        );
+    }
 }
