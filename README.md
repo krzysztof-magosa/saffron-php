@@ -16,7 +16,7 @@ You can easily install Saffron by adding below requirement to your composer.json
 ```json
 {
     "require": {
-        "krzysztof-magosa/saffron": "0.2.*"
+        "krzysztof-magosa/saffron": "1.*"
     }
 }
 ```
