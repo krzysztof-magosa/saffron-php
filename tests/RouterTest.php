@@ -102,4 +102,15 @@ class RouterTest extends PHPUnit_Framework_TestCase
         
         $this->assertEquals(12345, $route->getParam('id'));
     }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Route with name home is already registered
+     */
+    public function testDuplicateOfNamedRoute()
+    {
+        $router = new \KM\Saffron\Router();
+        $router->append(['name' => 'home', 'uri' => '/']);
+        $router->append(['name' => 'home', 'uri' => '/home']);
+    }
 }

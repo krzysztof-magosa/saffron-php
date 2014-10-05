@@ -20,6 +20,11 @@ class Router
     protected $routes = [];
     protected $namedRoutes = [];
 
+    protected function hasNamedRoute($name)
+    {
+        return isset($this->namedRoutes[$name]);
+    }
+
     /**
      * Appends route to router.
      * 
@@ -33,6 +38,14 @@ class Router
         $this->routes[] = $route;
 
         if ($route['name']) {
+            if ($this->hasNamedRoute($route['name'])) {
+                throw new \LogicException(
+                    sprintf(
+                        'Route with name %s is already registered',
+                        $route['name']
+                    )
+                );
+            }
             $this->namedRoutes[$route['name']] = $route;
         }
 
