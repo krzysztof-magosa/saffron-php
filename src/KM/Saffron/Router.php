@@ -68,6 +68,11 @@ class Router
                     '',
                     $nested['uri']
                 );
+
+                // @TODO maybe it can be done more beautiful ;)
+                if (empty($nested['uri'])) {
+                    $nested['uri'] = '/';
+                }
                 
                 $this->compileRegex($nested);
                 $this->routes[] = $nested;
