@@ -195,7 +195,8 @@ class Router
         }
 
         $uri = $this->namedRoutes[$name]['uri'];
-        foreach ($parameters as $name => $value) {
+        $defaultParameters = $this->namedRoutes[$name]['default'];
+        foreach (array_merge($defaultParameters, $parameters) as $name => $value) {
             $uri = str_replace('{'.$name.'}', $value, $uri);
         }
 
