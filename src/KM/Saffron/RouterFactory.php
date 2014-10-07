@@ -18,6 +18,7 @@ namespace KM\Saffron;
 class RouterFactory
 {
     protected $cacheKey;
+    protected $cacheAdapter;
     protected $cacheTtl = 600;
     protected $routes = [];
 
@@ -49,29 +50,19 @@ class RouterFactory
         return $this->cacheKey;
     }
 
-    /**
-     * If possible tries to use APC to store result of $closure.
-     * If APC is not installed, just returns result of $closure.
-     * 
-     * @param \Closure $closure Closure to be cached.
-     * @return mixed The result of closure.
-     */
-    protected function cache(\Closure $closure)
+    public function setCacheAdapter(Cache\CacheInterface $adapter)
     {
-        if (extension_loaded('apc')) {
-            $key = $this->getCacheKey();
-            $data = apc_fetch($key, $success);
+        $this->cacheAdapter = $adapter;
+        return $this;
+    }
 
-            if (!$success) {
-                $data = $closure();
-                apc_store($key, $data, $this->getCacheTtl());
-            }
-        }
-        else {
-            $data = $closure();
+    protected function getCacheAdapter()
+    {
+        if (!$this->cacheAdapter) {
+            $this->setCacheAdapter(new Cache\None());
         }
 
-        return $data;
+        return $this->cacheAdapter;
     }
 
     /**
@@ -81,13 +72,20 @@ class RouterFactory
      */
     public function build(\Closure $init)
     {
-        return $this->cache(
-            function () use ($init) {
-                $router = new \KM\Saffron\Router();
-                $init($router);
+        $cacheAdapter = $this->getCacheAdapter();
+        $router = $cacheAdapter->get($this->getCacheKey());
 
-                return $router;
-            }
-        );
+        if (!$router) {
+            $router = new Router();
+            $init($router);
+
+            $cacheAdapter->set(
+                $this->getCacheKey(),
+                $router,
+                $this->getCacheTtl()
+            );
+        }
+
+        return $router;
     }
 }
