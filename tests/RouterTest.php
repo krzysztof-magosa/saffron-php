@@ -79,14 +79,25 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $route->getParam('routeName'));
     }
 
-    public function testOptionalParam()
+    public function optionalProvider()
+    {
+        return [
+            [ '/product/{id}', '/product' ],
+            [ '/{id}', '/' ]
+        ];
+    }
+
+    /**
+     * @dataProvider optionalProvider
+     */
+    public function testOptionalParam($pattern, $uri)
     {
         $router = new \KM\Saffron\Router();
         $router
             ->append(
                 [
                     'name' => 'get',
-                    'uri' => '/product/{id}',
+                    'uri' => $pattern,
                     'method' => 'GET',
                     'target' => ['ProductController', 'getAction'],
                     'default' => ['id' => 12345],
@@ -95,7 +106,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
         $request = new KM\Saffron\Request();
         $request
-            ->setUri('/product')
+            ->setUri($uri)
             ->setMethod('GET');
 
         $route = $router->dispatch($request);
