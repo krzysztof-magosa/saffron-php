@@ -36,6 +36,11 @@ class MatchedRoute
         return $this->parameters;
     }
 
+    public function getTarget()
+    {
+        return $this->target;
+    }
+
     public function execute()
     {
         return Executor::executeController(
