@@ -20,7 +20,6 @@ class RouterFactory
     protected $cacheKey;
     protected $cacheAdapter;
     protected $cacheTtl = 10;
-    protected $routes = [];
 
     public function setCacheTtl($ttl)
     {
