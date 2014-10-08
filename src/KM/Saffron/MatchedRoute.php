@@ -49,7 +49,7 @@ class MatchedRoute
         $executor = new Executor();
         $executor
             ->setController($this->target[0])
-            ->setAction($this->target[1])
+            ->setMethod($this->target[1])
             ->setParameters($this->getParams())
             ->fire();
 
