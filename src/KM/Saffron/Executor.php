@@ -3,29 +3,43 @@ namespace KM\Saffron;
 
 class Executor
 {
-    /**
-     * Build controller object, runs its method with provided parameters.
-     * It uses reflection to unpack parameters to proper method arguments.
-     * 
-     * @param string $controllerName Name of controller
-     * @param string $actionName Name of action (method)
-     * @param array $parameters Parameters to be passed to action
-     * @return mixed Controller object
-     */
-    static public function executeController($controllerName, $actionName, $parameters)
-    {
-        $controller = new $controllerName();
+    protected $controller;
+    protected $method;
+    protected $parameters = [];
 
-        $reflection = new \ReflectionClass($controllerName);
-        $method = $reflection->getMethod($actionName);
+    public function setController($controller)
+    {
+        if (is_string($controller)) {
+            $this->controller = new $controller();
+        }
+        else {
+            $this->controller = $controller;
+        }
+
+        return $this;
+    }
+
+    public function setMethod($method)
+    {
+        $this->method = $method;
+        return $this;
+    }
+
+    public function setParameters(array $parameters)
+    {
+        $this->parameters = $parameters;
+        return $this;
+    }
+
+    public function fire()
+    {
+        $method = new \ReflectionMethod($this->controller, $this->method);
         $arguments = [];
         foreach ($method->getParameters() as $parameter) {
             $name = $parameter->getName();
-            $arguments[] = isset($parameters[$name]) ? $parameters[$name] : null;
+            $arguments[] = isset($this->parameters[$name]) ? $this->parameters[$name] : null;
         }
 
-        $method->invokeArgs($controller, $arguments);
-
-        return $controller;
+        return $method->invokeArgs($this->controller, $arguments);
     }
 }
