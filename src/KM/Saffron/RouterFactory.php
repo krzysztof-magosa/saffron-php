@@ -58,7 +58,14 @@ class RouterFactory
     protected function getCacheAdapter()
     {
         if (!$this->cacheAdapter) {
-            $this->setCacheAdapter(new Cache\None());
+            $this->setCacheAdapter(
+                new Cache\FirstSupported(
+                    [
+                        new Cache\Apc(),
+                        new Cache\None()
+                    ]
+                )
+            );
         }
 
         return $this->cacheAdapter;
