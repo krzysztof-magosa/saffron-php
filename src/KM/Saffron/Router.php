@@ -63,16 +63,12 @@ class Router
                     );
                 }
                 
-                $nested['uri'] = preg_replace(
-                    '@.{0,1}\{'.$placeholder.'\}.*$@Usi',
-                    '',
-                    $nested['uri']
+                $pos = strpos($nested['uri'], '{'.$placeholder.'}');
+                $nested['uri'] = substr(
+                    $nested['uri'],
+                    0,
+                    ($pos <= 1) ? $pos : $pos-1 // don't remove initial /
                 );
-
-                // @TODO maybe it can be done more beautiful ;)
-                if (empty($nested['uri'])) {
-                    $nested['uri'] = '/';
-                }
                 
                 $this->compileRegex($nested);
                 $this->routes[] = $nested;
