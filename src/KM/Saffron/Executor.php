@@ -6,6 +6,8 @@ class Executor
     protected $controller;
     protected $method;
     protected $parameters = [];
+    protected $preDispatch;
+    protected $postDispatch;
 
     public function setController($controller)
     {
@@ -31,8 +33,24 @@ class Executor
         return $this;
     }
 
+    public function setPreDispatch(callable $func)
+    {
+        $this->preDispatch = $func;
+        return $this;
+    }
+
+    public function setPostDispatch(callable $func)
+    {
+        $this->postDispatch = $func;
+        return $this;
+    }
+
     public function fire()
     {
+        if ($this->preDispatch) {
+            $this->preDispatch($this->controller, $this->method, $this->parameters);
+        }
+
         $method = new \ReflectionMethod($this->controller, $this->method);
         $arguments = [];
         foreach ($method->getParameters() as $parameter) {
@@ -40,6 +58,12 @@ class Executor
             $arguments[] = isset($this->parameters[$name]) ? $this->parameters[$name] : null;
         }
 
-        return $method->invokeArgs($this->controller, $arguments);
+        $result = $method->invokeArgs($this->controller, $arguments);
+
+        if ($this->postDispatch) {
+            $this->postDispatch($this->controller, $this->method, $this->parameters);
+        }
+
+        return $result;
     }
 }
