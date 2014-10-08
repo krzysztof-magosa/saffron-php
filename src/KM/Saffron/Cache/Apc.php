@@ -12,4 +12,9 @@ class Apc implements CacheInterface
     {
         return apc_store($key, $value, $ttl);
     }
+
+    public function isSupported()
+    {
+        return extension_loaded('apc');
+    }
 }

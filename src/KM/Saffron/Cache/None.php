@@ -12,4 +12,9 @@ class None implements CacheInterface
     {
         return false;
     }
+
+    public function isSupported()
+    {
+        return true;
+    }
 }
