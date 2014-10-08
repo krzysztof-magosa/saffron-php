@@ -41,12 +41,18 @@ class MatchedRoute
         return $this->target;
     }
 
+    /**
+     * @depreceated Use Executor directly
+     */
     public function execute()
     {
-        return Executor::executeController(
-            $this->target[0],
-            $this->target[1],
-            $this->getParams()
-        );
+        $executor = new Executor();
+        $executor
+            ->setController($this->target[0])
+            ->setAction($this->target[1])
+            ->setParameters($this->getParams())
+            ->fire();
+
+        return $executor->getController();
     }
 }
