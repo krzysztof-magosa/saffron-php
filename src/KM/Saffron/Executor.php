@@ -21,6 +21,11 @@ class Executor
         return $this;
     }
 
+    public function getController()
+    {
+        return $this->controller;
+    }
+
     public function setMethod($method)
     {
         $this->method = $method;
