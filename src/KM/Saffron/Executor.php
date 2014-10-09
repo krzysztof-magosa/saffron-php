@@ -9,6 +9,16 @@ class Executor
     protected $preDispatch;
     protected $postDispatch;
 
+    public function __construct($route = null)
+    {
+        if ($route instanceof MatchedRoute) {
+            $this
+                ->setController($route->getTarget()[0])
+                ->setMethod($route->getTarget()[1])
+                ->setParameters($route->getParams());
+        }
+    }
+
     public function setController($controller)
     {
         if (is_string($controller)) {
