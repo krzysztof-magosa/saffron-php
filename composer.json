@@ -4,7 +4,7 @@
     "description": "Tiny PHP router",
     "keywords": ["router", "routing", "tiny"],
     "license": "Apache-2.0",
-    "version": "2.4.2",
+    "version": "3.0.0",
     "authors": [
         {
             "name": "Krzysztof Magosa",
