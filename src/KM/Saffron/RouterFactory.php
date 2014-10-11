@@ -78,15 +78,16 @@ class RouterFactory
      */
     public function build(\Closure $init)
     {
+        $cacheKey = $this->getCacheKey();
         $cacheAdapter = $this->getCacheAdapter();
-        $router = $cacheAdapter->get($this->getCacheKey());
+        $router = $cacheAdapter->get($cacheKey);
 
         if (!$router) {
             $router = new Router();
             $init($router);
 
             $cacheAdapter->set(
-                $this->getCacheKey(),
+                $cacheKey,
                 $router,
                 $this->getCacheTtl()
             );
