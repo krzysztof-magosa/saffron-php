@@ -136,11 +136,7 @@ class Router
 
             $regex = str_replace(
                 '{'.$placeholder .'}',
-                sprintf(
-                    '(?P<%s>%s)',
-                    $placeholder,
-                    $require
-                ),
+                '(?P<'.$placeholder.'>'.$require.')',
                 $regex
             );
         }
