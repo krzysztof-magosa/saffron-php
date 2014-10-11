@@ -58,7 +58,7 @@ class Request
     {
         $instance = new static();
         $instance
-            ->setUri(strstr($_SERVER['REQUEST_URI'], '?', true))
+            ->setUri(explode('?', $_SERVER['REQUEST_URI'])[0])
             ->setMethod($_SERVER['REQUEST_METHOD'])
             ->setDomain($_SERVER['HTTP_HOST']);
 
