@@ -67,7 +67,7 @@ class Router
                 $nested['uri'] = substr(
                     $nested['uri'],
                     0,
-                    ($pos <= 1) ? $pos : $pos-1 // don't remove initial /
+                    max(1, $pos-1) // don't remove initial /
                 );
                 
                 $this->compileRegex($nested);
