@@ -1,0 +1,15 @@
+{
+    "require": {
+        "krzysztof-magosa/saffron": "3.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Site\\Controller\\": "src/Controller/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "php ./vendor/krzysztof-magosa/saffron/bin/compile -s ./src/router.php -d ./src/router.compiled.php"
+        ]
+    }
+}
