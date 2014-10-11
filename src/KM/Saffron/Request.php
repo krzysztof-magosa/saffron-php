@@ -53,4 +53,15 @@ class Request
         $this->method = $method;
         return $this;
     }
+
+    static public function createFromGlobals()
+    {
+        $instance = new static();
+        $instance
+            ->setUri(strstr($_SERVER['REQUEST_URI'], '?', true))
+            ->setMethod($_SERVER['REQUEST_METHOD'])
+            ->setDomain($_SERVER['HTTP_HOST']);
+
+        return $instance;
+    }
 }
