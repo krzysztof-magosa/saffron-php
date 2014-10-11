@@ -199,4 +199,13 @@ class Router
 
         return $uri;
     }
+
+    static public function __set_state($state)
+    {
+        $instance = new static();
+        $instance->routes = $state['routes'];
+        $instance->namedRoutes = $state['namedRoutes'];
+
+        return $instance;
+    }
 }
