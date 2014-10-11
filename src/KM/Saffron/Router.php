@@ -115,7 +115,7 @@ class Router
             $route['target'] = null;
         }
 
-        preg_match_all('@{(.+)}@Usi', $route['uri'], $placeholders);
+        preg_match_all('@{(.+)}@Us', $route['uri'], $placeholders);
         $route['placeholders'] = $placeholders[1];
     }
 
