@@ -39,7 +39,7 @@ class Router
 
         if ($route['name']) {
             if ($this->hasNamedRoute($route['name'])) {
-                throw new \LogicException(
+                throw new Exception\RouteAlreadyRegistered(
                     sprintf(
                         'Route with name %s is already registered',
                         $route['name']
@@ -55,7 +55,7 @@ class Router
         foreach (array_reverse($route['placeholders']) as $placeholder) {
             if (in_array($placeholder, array_keys($route['default']))) {
                 if (!preg_match('@{'.$placeholder.'}$@Us', $nested['uri'])) {
-                    throw new \LogicException(
+                    throw new Exception\InvalidRouteDefinition(
                         sprintf(
                             'It makes no sense to set default value for value %s in the middle of uri',
                             $placeholder
@@ -188,7 +188,7 @@ class Router
     public function assemble($name, array $parameters = [])
     {
         if (!isset($this->namedRoutes[$name])) {
-            throw new \LogicException("There is no route $name.");
+            throw new Exception\NoSuchRoute("There is no route $name.");
         }
 
         $uri = $this->namedRoutes[$name]['uri'];

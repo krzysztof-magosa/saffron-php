@@ -115,7 +115,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException \KM\Saffron\Exception\RouteAlreadyRegistered
      * @expectedExceptionMessage Route with name home is already registered
      */
     public function testDuplicateOfNamedRoute()
@@ -126,7 +126,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException \KM\Saffron\Exception\InvalidRouteDefinition
      * @expectedExceptionMessage It makes no sense to set default value for value place in the middle of uri
      */
     public function testDefaultValueInMiddle()
