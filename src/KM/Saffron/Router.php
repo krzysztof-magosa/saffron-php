@@ -54,7 +54,7 @@ class Router
         $nested = $route;
         foreach (array_reverse($route['placeholders']) as $placeholder) {
             if (in_array($placeholder, array_keys($route['default']))) {
-                if (!preg_match('@{'.$placeholder.'}$@Usi', $nested['uri'])) {
+                if (!preg_match('@{'.$placeholder.'}$@Us', $nested['uri'])) {
                     throw new \LogicException(
                         sprintf(
                             'It makes no sense to set default value for value %s in the middle of uri',
@@ -145,7 +145,7 @@ class Router
             );
         }
 
-        $route['regex'] = '@^'.$regex.'$@Usi';
+        $route['regex'] = '@^'.$regex.'$@Us';
     }
 
     /**
