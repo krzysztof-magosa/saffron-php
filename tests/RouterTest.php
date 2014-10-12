@@ -221,4 +221,25 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull($route);
         $this->assertInstanceOf('\KM\Saffron\MatchedRoute', $route);
     }
+
+    public function testSetState()
+    {
+        $router1 = new \KM\Saffron\Router();
+        $router1
+            ->append(
+                [
+                    'name' => 'team',
+                    'uri' => '/team/{name}/{id}',
+                    'target' => ['TeamController', 'dispatch'],
+                    'require' => [
+                        'id' => '\d+'
+                    ]
+                ]
+            );
+
+        $state = var_export($router1, true);
+        $router2 = eval('return ' . $state .';');
+
+        $this->assertEquals($router1, $router2);
+    }
 }
