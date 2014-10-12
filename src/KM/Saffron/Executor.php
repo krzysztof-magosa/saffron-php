@@ -63,7 +63,12 @@ class Executor
     public function fire()
     {
         if ($this->preDispatch) {
-            $this->preDispatch($this->controller, $this->method, $this->parameters);
+            call_user_func(
+                $this->preDispatch,
+                $this->controller,
+                $this->method,
+                $this->parameters
+            );
         }
 
         $method = new \ReflectionMethod($this->controller, $this->method);
@@ -76,7 +81,12 @@ class Executor
         $result = $method->invokeArgs($this->controller, $arguments);
 
         if ($this->postDispatch) {
-            $this->postDispatch($this->controller, $this->method, $this->parameters);
+            call_user_func(
+                $this->postDispatch,
+                $this->controller,
+                $this->method,
+                $this->parameters
+            );
         }
 
         return $result;
