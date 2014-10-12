@@ -1,0 +1,19 @@
+{
+    "require": {
+        "aura/router": "2.1.0",
+        "klein/klein": "2.0.2",
+        "corneltek/pux": "1.5.2",
+        "symfony/routing": "2.5.5",
+        "krzysztof-magosa/saffron": "4.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "KM\\": "src/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "php vendor/krzysztof-magosa/saffron/bin/compile -s ./test/saffron/router.php -d ./test/saffron/router.compiled.php"
+        ]
+    }
+}
