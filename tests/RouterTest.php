@@ -18,17 +18,17 @@ class RouterTest extends PHPUnit_Framework_TestCase
     public function provider()
     {
         return [
-            ['/product', 'POST', 'create'],
-            ['/product/100', 'POST', 'update'],
-            ['/product/200', 'GET', 'get'],
-            ['/product/300', 'DELETE', 'delete'],
+            ['/product', 'example1.com', 'POST', 'create'],
+            ['/product/100', 'example2.com', 'POST', 'update'],
+            ['/product/200', 'example3.com', 'GET', 'get'],
+            ['/product/300', 'example4.com', 'DELETE', 'delete'],
         ];
     }
 
     /**
      * @dataProvider provider
      */
-    public function testDispatch($uri, $method, $expected)
+    public function testDispatch($uri, $domain, $method, $expected)
     {
         $router = new \KM\Saffron\Router();
         $router
@@ -37,6 +37,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
                     'name' => 'create',
                     'uri' => '/product',
                     'method' => 'POST',
+                    'domain' => 'example1.com',
                     'target' => ['ProductController', 'createAction'],
                     'default' => ['routeName' => 'create'],
                 ]
@@ -46,6 +47,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
                     'name' => 'update',
                     'uri' => '/product/{id}',
                     'method' => 'POST',
+                    'domain' => 'example2.com',
                     'target' => ['ProductController', 'updateAction'],
                     'default' => ['routeName' => 'update'],
                 ]
@@ -55,6 +57,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
                     'name' => 'get',
                     'uri' => '/product/{id}',
                     'method' => 'GET',
+                    'domain' => 'example3.com',
                     'target' => ['ProductController', 'getAction'],
                     'default' => ['routeName' => 'get'],
                 ]
@@ -64,6 +67,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
                     'name' => 'delete',
                     'uri' => '/product/{id}',
                     'method' => 'DELETE',
+                    'domain' => 'example4.com',
                     'target' => ['ProductController', 'deleteAction'],
                     'default' => ['routeName' => 'delete'],
                 ]
@@ -72,7 +76,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $request = new KM\Saffron\Request();
         $request
             ->setUri($uri)
-            ->setMethod($method);
+            ->setMethod($method)
+            ->setDomain($domain);
 
         $route = $router->dispatch($request);
         
