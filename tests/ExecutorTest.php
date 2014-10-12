@@ -20,6 +20,8 @@ class Controller
 {
     public function dispatch($a, $b, $c)
     {
+        global $steps;
+        $steps[] = 'dispatch';
         return [$a, $b, $c];
     }
 }
@@ -83,5 +85,89 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('11', $vars[0]);
         $this->assertEquals('12', $vars[1]);
         $this->assertEquals('13', $vars[2]);
+    }
+
+    public function testPreDispatch()
+    {
+        global $steps;
+
+        $route = new MatchedRoute(
+            ['Controller', 'dispatch'],
+            [
+                'a' => '11',
+                'b' => '12',
+                'c' => '13',
+            ]
+        );
+
+        $steps = [];
+        $executor = new Executor($route);
+        $executor->setPreDispatch(
+            function () {
+                global $steps;
+                $steps[] = 'preDispatch';
+            }
+        );
+        $executor->fire();
+
+        $this->assertEquals(['preDispatch', 'dispatch'], $steps);
+    }
+
+    public function testPostDispatch()
+    {
+        global $steps;
+
+        $route = new MatchedRoute(
+            ['Controller', 'dispatch'],
+            [
+                'a' => '11',
+                'b' => '12',
+                'c' => '13',
+            ]
+        );
+
+        $steps = [];
+        $executor = new Executor($route);
+        $executor->setPostDispatch(
+            function () {
+                global $steps;
+                $steps[] = 'postDispatch';
+            }
+        );
+        $executor->fire();
+
+        $this->assertEquals(['dispatch', 'postDispatch'], $steps);
+    }
+
+    public function testPreWithPostDispatch()
+    {
+        global $steps;
+
+        $route = new MatchedRoute(
+            ['Controller', 'dispatch'],
+            [
+                'a' => '11',
+                'b' => '12',
+                'c' => '13',
+            ]
+        );
+
+        $steps = [];
+        $executor = new Executor($route);
+        $executor->setPreDispatch(
+            function () {
+                global $steps;
+                $steps[] = 'preDispatch';
+            }
+        );
+        $executor->setPostDispatch(
+            function () {
+                global $steps;
+                $steps[] = 'postDispatch';
+            }
+        );
+        $executor->fire();
+
+        $this->assertEquals(['preDispatch', 'dispatch', 'postDispatch'], $steps);
     }
 }
