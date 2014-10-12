@@ -54,12 +54,18 @@ class Router
             $this->namedRoutes[$route['name']] = $route;
         }
 
+        $this->optionalMutations($route);
+        
+        return $this;
+    }
+
+    protected function optionalMutations(array $route)
+    {
         // Magic for optional parameters
         // Go through optional parameters, and cut off url behind them
-        $nested = $route;
         foreach (array_reverse($route['placeholders']) as $placeholder) {
             if (in_array($placeholder, array_keys($route['default']))) {
-                if (!preg_match('@{'.$placeholder.'}$@Us', $nested['uri'])) {
+                if (!preg_match('@{'.$placeholder.'}$@Us', $route['uri'])) {
                     throw new Exception\InvalidRouteDefinition(
                         sprintf(
                             'It makes no sense to set default value for value %s in the middle of uri',
@@ -68,19 +74,17 @@ class Router
                     );
                 }
                 
-                $pos = strpos($nested['uri'], '{'.$placeholder.'}');
-                $nested['uri'] = substr(
-                    $nested['uri'],
+                $pos = strpos($route['uri'], '{'.$placeholder.'}');
+                $route['uri'] = substr(
+                    $route['uri'],
                     0,
                     max(1, $pos-1) // don't remove initial /
                 );
                 
-                $this->compileRegex($nested);
-                $this->routes[] = $nested;
+                $this->compileRegex($route);
+                $this->routes[] = $route;
             }
         }
-        
-        return $this;
     }
 
     /**
