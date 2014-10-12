@@ -21,39 +21,68 @@ class Request
     protected $uri;
     protected $method;
 
+    /**
+     * Returns domain or null when not set
+     * 
+     * @return string|null
+     */
     public function getDomain()
     {
         return $this->domain;
     }
 
+    /**
+     * Sets domain
+     */
     public function setDomain($domain)
     {
         $this->domain = $domain;
         return $this;
     }
 
+    /**
+     * Returns uri or null when not set
+     * 
+     * @return string|null
+     */
     public function getUri()
     {
         return $this->uri;
     }
 
+    /**
+     * Sets uri
+     */
     public function setUri($uri)
     {
         $this->uri = $uri;
         return $this;
     }
 
+    /**
+     * Returns method or null when not set
+     * 
+     * @return string|null
+     */
     public function getMethod()
     {
         return $this->method;
     }
 
+    /**
+     * Sets method
+     */
     public function setMethod($method)
     {
         $this->method = $method;
         return $this;
     }
 
+    /**
+     * Builds request object from super globals
+     * 
+     * @return \KM\Saffron\Request
+     */
     static public function createFromGlobals()
     {
         $instance = new static();

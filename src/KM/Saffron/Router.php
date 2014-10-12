@@ -20,6 +20,11 @@ class Router
     protected $routes = [];
     protected $namedRoutes = [];
 
+    /**
+     * Checks whether specified route exists
+     * 
+     * @return bool
+     */
     protected function hasNamedRoute($name)
     {
         return isset($this->namedRoutes[$name]);
@@ -148,7 +153,7 @@ class Router
      * Dispatches the request.
      * 
      * @param \KM\Saffron\Request $request Request to be dispatched.
-     * @return mixed MatchedRoute object or null
+     * @return \KM\Saffron\MatchedRoute|null MatchedRoute object or null
      */
     public function dispatch(Request $request)
     {
@@ -200,6 +205,11 @@ class Router
         return $uri;
     }
 
+    /**
+     * Magic method for loading object stored by var_export
+     * 
+     * @return \KM\Saffron\Router
+     */
     static public function __set_state($state)
     {
         $instance = new static();
