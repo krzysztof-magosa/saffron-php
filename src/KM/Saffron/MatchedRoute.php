@@ -40,19 +40,4 @@ class MatchedRoute
     {
         return $this->target;
     }
-
-    /**
-     * @depreceated Use Executor directly
-     */
-    public function execute()
-    {
-        $executor = new Executor();
-        $executor
-            ->setController($this->target[0])
-            ->setMethod($this->target[1])
-            ->setParameters($this->getParams())
-            ->fire();
-
-        return $executor->getController();
-    }
 }
