@@ -1,11 +1,26 @@
 <?php
-$routes = new \Symfony\Component\Routing\RouteCollection();
 
-for ($i = 1; $i <= 9; $i++) {
+$closure = function() {
+    $routes = new \Symfony\Component\Routing\RouteCollection();
+
+    for ($i = 1; $i <= 9; $i++) {
+        $routes->add(
+            'test'.$i,
+            new \Symfony\Component\Routing\Route(
+                '/test'.$i.'/{slug}/{id}',
+                array('_controller' => 'XBundle:Controller:foo'),
+                array(
+                    'slug' => '\w+',
+                    'id' => '\d+',
+                )
+            )
+        );
+    }
+
     $routes->add(
-        'test'.$i,
+        'test',
         new \Symfony\Component\Routing\Route(
-            '/test'.$i.'/{slug}/{id}',
+            '/test/{slug}/{id}',
             array('_controller' => 'XBundle:Controller:foo'),
             array(
                 'slug' => '\w+',
@@ -13,20 +28,20 @@ for ($i = 1; $i <= 9; $i++) {
             )
         )
     );
-}
 
-$routes->add(
-    'test',
-    new \Symfony\Component\Routing\Route(
-        '/test/{slug}/{id}',
-        array('_controller' => 'XBundle:Controller:foo'),
-        array(
-            'slug' => '\w+',
-            'id' => '\d+',
-        )
-    )
+    return $routes;
+};
+
+$loader = new Symfony\Component\Routing\Loader\ClosureLoader();
+$requestContext = new \Symfony\Component\Routing\RequestContext($_SERVER['REQUEST_URI']);
+$router = new \Symfony\Component\Routing\Router(
+    $loader,
+    $closure,
+    array(
+        'cache_dir' => sys_get_temp_dir() . '/router_cache'
+    ),
+    $requestContext
 );
 
-$context = new \Symfony\Component\Routing\RequestContext($_SERVER['REQUEST_URI']);
-$matcher = new \Symfony\Component\Routing\Matcher\UrlMatcher($routes, $context);
-$route = $matcher->match($_SERVER['REQUEST_URI']);
+
+$route = $router->match($_SERVER['REQUEST_URI']);
