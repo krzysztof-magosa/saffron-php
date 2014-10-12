@@ -6,4 +6,11 @@ php:
 install:
   - composer install
 
-script: phpunit --bootstrap ./tests/bootstrap.php ./tests/
+before_script:
+  - mkdir -p build/logs
+
+script:
+  - phpunit --coverage-clover build/logs/clover.xml --bootstrap ./tests/bootstrap.php ./tests/
+
+after_script:
+  - php vendor/bin/coveralls -v
