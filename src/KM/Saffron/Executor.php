@@ -60,6 +60,11 @@ class Executor
         return $this;
     }
 
+    /**
+     * Calls hook is it's callable
+     *
+     * @param callable|null $hook Hook to be fired
+     */
     protected function runHook($hook)
     {
         if (is_callable($hook)) {
@@ -72,6 +77,14 @@ class Executor
         }
     }
 
+    /**
+     * Runs:
+     *  - preDispatch (if set)
+     *  - method in controller
+     *  - postDispatch (if set)
+     * 
+     * @return mixed Value returned by controller's method
+     */
     public function fire()
     {
         $this->runHook($this->preDispatch);
