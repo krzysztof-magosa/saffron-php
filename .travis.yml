@@ -14,5 +14,5 @@ script:
   - phpunit --coverage-clover build/logs/clover.xml --bootstrap ./tests/bootstrap.php ./tests/
 
 after_script:
-  - php vendor/bin/coveralls -v
-  - php vendor/bin/ocular code-coverage:upload --format=php-clover ./build/logs/clover.xml
+  - if [[ "`php --version`" != *HipHop* ]] then php vendor/bin/coveralls -v ; fi
+  - if [[ "`php --version`" != *HipHop* ]] then php vendor/bin/ocular code-coverage:upload --format=php-clover ./build/logs/clover.xml ; fi
