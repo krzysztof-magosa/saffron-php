@@ -170,4 +170,21 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(['preDispatch', 'dispatch', 'postDispatch'], $steps);
     }
+
+    public function testGetController()
+    {
+        $route = new MatchedRoute(
+            ['Controller', 'dispatch'],
+            [
+                'a' => '11',
+                'b' => '12',
+                'c' => '13',
+            ]
+        );
+
+        $executor = new Executor($route);
+        $controller = $executor->getController();
+
+        $this->assertInstanceOf('Controller', $controller);
+    }
 }
