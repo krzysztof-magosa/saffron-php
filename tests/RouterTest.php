@@ -176,4 +176,49 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('/contact/km', $router->assemble('home'));
     }
+
+    public function testRequireRegex1()
+    {
+        $router = new \KM\Saffron\Router();
+        $router
+            ->append(
+                [
+                    'name' => 'team',
+                    'uri' => '/team/{name}/{id}',
+                    'target' => ['TeamController', 'dispatch'],
+                    'require' => [
+                        'id' => '\d+'
+                    ]
+                ]
+            );
+            
+        $request = new KM\Saffron\Request();
+        $request->setUri('/team/superteam/digit');
+        $route = $router->dispatch($request);
+
+        $this->assertNull($route);
+    }
+
+    public function testRequireRegex2()
+    {
+        $router = new \KM\Saffron\Router();
+        $router
+            ->append(
+                [
+                    'name' => 'team',
+                    'uri' => '/team/{name}/{id}',
+                    'target' => ['TeamController', 'dispatch'],
+                    'require' => [
+                        'id' => '\d+'
+                    ]
+                ]
+            );
+            
+        $request = new KM\Saffron\Request();
+        $request->setUri('/team/superteam/5');
+        $route = $router->dispatch($request);
+
+        $this->assertNotNull($route);
+        $this->assertInstanceOf('\KM\Saffron\MatchedRoute', $route);
+    }
 }
