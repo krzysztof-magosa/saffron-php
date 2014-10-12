@@ -63,8 +63,11 @@ class Router
     {
         // Magic for optional parameters
         // Go through optional parameters, and cut off url behind them
-        foreach (array_reverse($route['placeholders']) as $placeholder) {
-            if (in_array($placeholder, array_keys($route['default']))) {
+        $placeholders = array_reverse($route['placeholders']);
+        $optionalPlaceholders = array_keys($route['default']);
+
+        foreach ($placeholders as $placeholder) {
+            if (in_array($placeholder, $optionalPlaceholders)) {
                 if (!preg_match('@{'.$placeholder.'}$@Us', $route['uri'])) {
                     throw new Exception\InvalidRouteDefinition(
                         sprintf(
