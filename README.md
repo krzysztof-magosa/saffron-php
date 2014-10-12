@@ -40,9 +40,9 @@ Saffron (e+c)  3.24 k/s ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒�
 * e - router executes Controller or provided Closure
 * no letter - router just returns matched route
 
-Benchmark performed on OS X Yosemite, CPU i5 2.6GHz, PHP 5.6.1, in CLI.
-There were 10 regex routes, last one was triggered.
-Pux was used without its module for PHP.
+Benchmark performed on OS X Yosemite, CPU i5 2.6GHz, PHP 5.6.1, in CLI.  
+There were 10 regex routes, last one was triggered.  
+Pux was used without its module for PHP.  
 
 ## Usage
 Please follow to [example](https://github.com/krzysztof-magosa/saffron-php/tree/master/example) 
