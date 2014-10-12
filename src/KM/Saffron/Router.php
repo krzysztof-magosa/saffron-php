@@ -94,36 +94,20 @@ class Router
      */
     protected function prepareRoute(array &$route)
     {
-        if (!isset($route['name'])) {
-            $route['name'] = null;
-        }
+        $default = [
+            'name' => null,
+            'require' => [],
+            'default' => [],
+            'domain' => [],
+            'method' => [],
+            'target' => null,
+        ];
 
-        if (!isset($route['require'])) {
-            $route['require'] = [];
-        }
+        $route = array_merge($default, $route);
 
-        if (!isset($route['default'])) {
-            $route['default'] = [];
-        }
-
-        if (isset($route['domain'])) {
-            $route['domain'] = (array)$route['domain'];
-        }
-        else {
-            $route['domain'] = null;
-        }
-
-        if (isset($route['method'])) {
-            $route['method'] = (array)$route['method'];
-        }
-        else {
-            $route['method'] = null;
-        }
-
-        if (!isset($route['target'])) {
-            $route['target'] = null;
-        }
-
+        $route['domain'] = (array)$route['domain'];
+        $route['method'] = (array)$route['method'];
+    
         preg_match_all('@{(.+)}@Us', $route['uri'], $placeholders);
         $route['placeholders'] = $placeholders[1];
     }
