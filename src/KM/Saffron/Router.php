@@ -68,7 +68,17 @@ class Router
 
         foreach ($placeholders as $placeholder) {
             if (in_array($placeholder, $optionalPlaceholders)) {
-                if (!preg_match('@{'.$placeholder.'}$@Us', $route['uri'])) {
+                // Checks whether string ends with placeholder
+                // If so gets everything before separator before it 
+                // Doesn't cut of beginning char (/)
+                // /product/{router} -> /product
+                // /{product} -> /
+                if (preg_match('@^(..*).?{'.$placeholder.'}$@Us', $route['uri'], $match)) {
+                    $route['uri'] = $match[1];
+                    $this->compileRegex($route);
+                    $this->routes[] = $route;
+                }
+                else {
                     throw new Exception\InvalidRouteDefinition(
                         sprintf(
                             'It makes no sense to set default value for value %s in the middle of uri',
@@ -76,16 +86,6 @@ class Router
                         )
                     );
                 }
-                
-                $pos = strpos($route['uri'], '{'.$placeholder.'}');
-                $route['uri'] = substr(
-                    $route['uri'],
-                    0,
-                    max(1, $pos-1) // don't remove initial /
-                );
-                
-                $this->compileRegex($route);
-                $this->routes[] = $route;
             }
         }
     }
