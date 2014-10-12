@@ -1,6 +1,6 @@
 {
     "require": {
-        "krzysztof-magosa/saffron": "3.*"
+        "krzysztof-magosa/saffron": "4.*"
     },
     "autoload": {
         "psr-4": {
