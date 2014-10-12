@@ -60,16 +60,21 @@ class Executor
         return $this;
     }
 
-    public function fire()
+    protected function runHook($hook)
     {
-        if ($this->preDispatch) {
+        if (is_callable($hook)) {
             call_user_func(
-                $this->preDispatch,
+                $hook,
                 $this->controller,
                 $this->method,
                 $this->parameters
             );
         }
+    }
+
+    public function fire()
+    {
+        $this->runHook($this->preDispatch);
 
         $method = new \ReflectionMethod($this->controller, $this->method);
         $arguments = [];
@@ -80,14 +85,7 @@ class Executor
 
         $result = $method->invokeArgs($this->controller, $arguments);
 
-        if ($this->postDispatch) {
-            call_user_func(
-                $this->postDispatch,
-                $this->controller,
-                $this->method,
-                $this->parameters
-            );
-        }
+        $this->runHook($this->postDispatch);
 
         return $result;
     }
