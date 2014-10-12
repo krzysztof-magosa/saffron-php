@@ -146,4 +146,34 @@ class RouterTest extends PHPUnit_Framework_TestCase
             ]
         );
     }
+
+    public function testAssemble()
+    {
+        $router = new \KM\Saffron\Router();
+        $router->append(
+            [
+                'name' => 'contact',
+                'uri' => '/contact/{name}'
+            ]
+        );
+
+        $this->assertEquals('/contact/km', $router->assemble('contact', ['name' => 'km']));
+    }
+
+    /**
+     * @expectedException \KM\Saffron\Exception\NoSuchRoute
+     * @expectedExceptionMessage There is no route home.
+     */
+    public function testAssembleNoSuchRoute()
+    {
+        $router = new \KM\Saffron\Router();
+        $router->append(
+            [
+                'name' => 'contact',
+                'uri' => '/contact/{name}'
+            ]
+        );
+
+        $this->assertEquals('/contact/km', $router->assemble('home'));
+    }
 }
