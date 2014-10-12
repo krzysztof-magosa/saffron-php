@@ -153,24 +153,16 @@ class Router
         $uri = $request->getUri();
 
         foreach ($this->routes as $route) {
-            if ($route['method'] && !in_array($method, $route['method'])) {
-                continue;
+            if (
+                (!$route['method'] || in_array($method, $route['method'])) &&
+                (!$route['domain'] || in_array($domain, $route['domain'])) &&
+                (preg_match($route['regex'], $uri, $match))
+            ) {
+                return new MatchedRoute(
+                    $route['target'],
+                    array_merge($route['default'], $match)
+                );
             }
-
-            if ($route['domain'] && !in_array($domain, $route['domain'])) {
-                continue;
-            }
-
-            if (!preg_match($route['regex'], $uri, $match)) {
-                continue;
-            }
-
-            $matchedRoute = new MatchedRoute(
-                $route['target'],
-                array_merge($route['default'], $match)
-            );
-
-            return $matchedRoute;
         }
     }
 
