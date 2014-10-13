@@ -106,7 +106,7 @@ class Router
             'target' => null,
         ];
 
-        $route = array_merge($default, $route);
+        $route = array_replace($default, $route);
 
         $route['domain'] = (array)$route['domain'];
         $route['method'] = (array)$route['method'];
@@ -171,7 +171,7 @@ class Router
             ) {
                 return new MatchedRoute(
                     $route['target'],
-                    array_merge($route['default'], $match)
+                    array_replace($route['default'], $match)
                 );
             }
         }
@@ -192,7 +192,7 @@ class Router
 
         $uri = $this->namedRoutes[$name]['uri'];
         $defaultParameters = $this->namedRoutes[$name]['default'];
-        foreach (array_merge($defaultParameters, $parameters) as $name => $value) {
+        foreach (array_replace($defaultParameters, $parameters) as $name => $value) {
             $uri = str_replace('{'.$name.'}', $value, $uri);
         }
 
