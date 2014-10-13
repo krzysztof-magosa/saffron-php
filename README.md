@@ -30,10 +30,6 @@ You can easily install Saffron by adding below requirement to your composer.json
 Saffron (e+c)  3.24 k/s ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
       Saffron  2.05 k/s ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
   Saffron (e)  1.74 k/s ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-    Klein (e)  1.36 k/s ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-          Pux  1.22 k/s ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-      Symfony  0.64 k/s ▒▒▒▒▒▒▒▒▒
-         Aura  0.55 k/s ▒
 </pre>
 
 * c - router uses "precompilation" (var_export) of objects to speed up start
