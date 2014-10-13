@@ -113,6 +113,16 @@ class Router
     
         preg_match_all('@{(.+)}@Us', $route['uri'], $placeholders);
         $route['placeholders'] = $placeholders[1];
+
+        // @TODO make it cleaner
+        $pos = strpos($route['uri'], '{');
+        if (false !== $pos) {
+            $length = max($pos - 1, 1);
+        }
+        else {
+            $length = strlen($route['uri']);
+        }
+        $route['prefix'] = substr($route['uri'], 0, $length);
     }
 
     /**
@@ -154,6 +164,7 @@ class Router
 
         foreach ($this->routes as $route) {
             if (
+                0 === strpos($uri, $route['prefix']) &&
                 (!$route['method'] || in_array($method, $route['method'])) &&
                 (!$route['domain'] || in_array($domain, $route['domain'])) &&
                 (preg_match($route['regex'], $uri, $match))
