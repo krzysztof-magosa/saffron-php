@@ -34,6 +34,8 @@ class Request
 
     /**
      * Sets domain
+     * 
+     * @return \KM\Saffron\Request
      */
     public function setDomain($domain)
     {
@@ -53,6 +55,7 @@ class Request
 
     /**
      * Sets uri
+     * @return \KM\Saffron\Request
      */
     public function setUri($uri)
     {
@@ -72,6 +75,8 @@ class Request
 
     /**
      * Sets method
+     * 
+     * @return \KM\Saffron\Request
      */
     public function setMethod($method)
     {
@@ -91,6 +96,8 @@ class Request
 
     /**
      * Sets info whether connection is secured by https
+     * 
+     * @return \KM\Saffron\Request
      */
     public function setHttps($https)
     {
