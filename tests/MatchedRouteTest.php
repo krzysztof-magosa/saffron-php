@@ -24,9 +24,9 @@ class MatchedRouteTest extends PHPUnit_Framework_TestCase
             ['a' => 1, 'b' => 2, 'c' => 3]
         );
 
-        $this->assertEquals(1, $route->getParam('a'));
-        $this->assertEquals(2, $route->getParam('b'));
-        $this->assertEquals(3, $route->getParam('c'));
+        $this->assertEquals(1, $route->getParameter('a'));
+        $this->assertEquals(2, $route->getParameter('b'));
+        $this->assertEquals(3, $route->getParameter('c'));
     }
 
     public function testGetParams()

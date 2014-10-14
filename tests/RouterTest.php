@@ -94,7 +94,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
         $route = $router->dispatch($request);
         
-        $this->assertEquals($expected, $route->getParam('routeName'));
+        $this->assertEquals($expected, $route->getParameter('routeName'));
     }
 
     public function optionalProvider()
@@ -129,7 +129,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
         $route = $router->dispatch($request);
         
-        $this->assertEquals(12345, $route->getParam('id'));
+        $this->assertEquals(12345, $route->getParameter('id'));
     }
 
     /**
