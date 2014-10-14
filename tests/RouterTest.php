@@ -18,17 +18,18 @@ class RouterTest extends PHPUnit_Framework_TestCase
     public function provider()
     {
         return [
-            ['/product', 'example1.com', 'POST', 'create'],
-            ['/product/100', 'example2.com', 'POST', 'update'],
-            ['/product/200', 'example3.com', 'GET', 'get'],
-            ['/product/300', 'example4.com', 'DELETE', 'delete'],
+            ['/product', 'example1.com', 'POST', false, 'create'],
+            ['/product/100', 'example2.com', 'POST', false, 'update'],
+            ['/product/200', 'example3.com', 'GET', false, 'get'],
+            ['/product/300', 'example4.com', 'DELETE', false, 'delete'],
+            ['/product/400', 'example5.com', 'PUT', true, 'put'],
         ];
     }
 
     /**
      * @dataProvider provider
      */
-    public function testDispatch($uri, $domain, $method, $expected)
+    public function testDispatch($uri, $domain, $method, $https, $expected)
     {
         $router = new \KM\Saffron\Router();
         $router
@@ -71,13 +72,25 @@ class RouterTest extends PHPUnit_Framework_TestCase
                     'target' => ['ProductController', 'deleteAction'],
                     'default' => ['routeName' => 'delete'],
                 ]
+            )
+            ->append(
+                [
+                    'name' => 'put',
+                    'uri' => '/product/{id}',
+                    'method' => 'PUT',
+                    'domain' => 'example5.com',
+                    'https' => true,
+                    'target' => ['ProductController', 'deleteAction'],
+                    'default' => ['routeName' => 'put'],
+                ]
             );
 
         $request = new KM\Saffron\Request();
         $request
             ->setUri($uri)
             ->setMethod($method)
-            ->setDomain($domain);
+            ->setDomain($domain)
+            ->setHttps($https);
 
         $route = $router->dispatch($request);
         

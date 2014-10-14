@@ -103,6 +103,7 @@ class Router
             'default' => [],
             'domain' => [],
             'method' => [],
+            'https' => [],
             'target' => null,
         ];
 
@@ -110,6 +111,7 @@ class Router
 
         $route['domain'] = (array)$route['domain'];
         $route['method'] = (array)$route['method'];
+        $route['https'] = (array)$route['https'];
     
         preg_match_all('@{(.+)}@Us', $route['uri'], $placeholders);
         $route['placeholders'] = $placeholders[1];
@@ -161,12 +163,14 @@ class Router
         $method = $request->getMethod();
         $domain = $request->getDomain();
         $uri = $request->getUri();
+        $https = $request->getHttps();
 
         foreach ($this->routes as $route) {
             if (
                 0 === strpos($uri, $route['prefix']) &&
                 (!$route['method'] || in_array($method, $route['method'])) &&
                 (!$route['domain'] || in_array($domain, $route['domain'])) &&
+                (!$route['https'] || in_array($https, $route['https'])) &&
                 (preg_match($route['regex'], $uri, $match))
             ) {
                 return new MatchedRoute(
