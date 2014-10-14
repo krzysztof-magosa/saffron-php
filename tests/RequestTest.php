@@ -38,16 +38,44 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('GET', $request->getMethod());
     }
 
-    public function testGlobals()
+    public function testHttps()
+    {
+        $request = new Request();
+        $request->setHttps(true);
+        $this->assertEquals(true, $request->getHttps());
+    }
+
+    public function testGlobals1()
     {
         $_SERVER['REQUEST_URI'] = '/another/uri';
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['HTTPS'] = 'on';
   
-        $request = Request::createFromGlobals();
-        
+        $request = Request::createFromGlobals();   
         $this->assertEquals('/another/uri', $request->getUri());
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('example.com', $request->getDomain());
+        $this->assertEquals(true, $request->getHttps());
+    }
+
+    public function testGlobals2()
+    {
+        $_SERVER['REQUEST_URI'] = '/another/uri';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['HTTPS'] = 'off';
+        $request = Request::createFromGlobals();   
+        $this->assertEquals(false, $request->getHttps());
+    }
+
+    public function testGlobals3()
+    {
+        $_SERVER['REQUEST_URI'] = '/another/uri';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['HTTPS'] = '';
+        $request = Request::createFromGlobals();   
+        $this->assertEquals(false, $request->getHttps());
     }
 }

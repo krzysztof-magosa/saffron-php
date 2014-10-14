@@ -20,6 +20,7 @@ class Request
     protected $domain;
     protected $uri;
     protected $method;
+    protected $https;
 
     /**
      * Returns domain or null when not set
@@ -79,6 +80,25 @@ class Request
     }
 
     /**
+     * Returns info whether connection is secured by https
+     * 
+     * @return bool
+     */
+    public function getHttps()
+    {
+        return $this->https;
+    }
+
+    /**
+     * Sets info whether connection is secured by https
+     */
+    public function setHttps($https)
+    {
+        $this->https = $https;
+        return $this;
+    }
+
+    /**
      * Builds request object from super globals
      * 
      * @return \KM\Saffron\Request
@@ -89,7 +109,10 @@ class Request
         $instance
             ->setUri(explode('?', $_SERVER['REQUEST_URI'])[0])
             ->setMethod($_SERVER['REQUEST_METHOD'])
-            ->setDomain($_SERVER['HTTP_HOST']);
+            ->setDomain($_SERVER['HTTP_HOST'])
+            ->setHttps(
+                !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
+            );
 
         return $instance;
     }
