@@ -15,7 +15,7 @@ class Executor
             $this
                 ->setController($route->getTarget()[0])
                 ->setMethod($route->getTarget()[1])
-                ->setParameters($route->getParams());
+                ->setParameters($route->getParameters());
         }
     }
 
