@@ -33,6 +33,13 @@ class Executor
         }
     }
 
+    /**
+     * Sets controller to be fired.
+     * It can be object or name of class.
+     * 
+     * @param object|string $controller
+     * @return Executor
+     */
     public function setController($controller)
     {
         if (is_string($controller)) {
@@ -45,29 +52,58 @@ class Executor
         return $this;
     }
 
+    /**
+     * Returns controller object
+     * 
+     * @return object
+     */
     public function getController()
     {
         return $this->controller;
     }
 
+    /**
+     * Sets method to be fired
+     * 
+     * @param string $method
+     * @return Executor
+     */
     public function setMethod($method)
     {
         $this->method = $method;
         return $this;
     }
 
+    /**
+     * Sets parameters to be passed to controller
+     * 
+     * @param array $parameters
+     * @return Executor
+     */
     public function setParameters(array $parameters)
     {
         $this->parameters = $parameters;
         return $this;
     }
 
+    /**
+     * Sets callable to be called before firing controller
+     * 
+     * @param callable $func
+     * @return Executor
+     */
     public function setPreDispatch(callable $func)
     {
         $this->preDispatch = $func;
         return $this;
     }
 
+    /**
+     * Sets callable to be called after firing controller
+     * 
+     * @param callable $func
+     * @return Executor
+     */
     public function setPostDispatch(callable $func)
     {
         $this->postDispatch = $func;
@@ -75,7 +111,7 @@ class Executor
     }
 
     /**
-     * Calls hook is it's callable
+     * Calls hook if it's callable
      *
      * @param callable|null $hook Hook to be fired
      */
