@@ -60,6 +60,13 @@ class RouterTest extends PHPUnit_Framework_TestCase
                     ->setDomain('example4.com')
                     ->setTarget('ProductController', 'deleteAction')
                     ->setDefaults(['routeName' => 'delete']);
+
+                $collection->route('put')
+                    ->setUri('/product/{id}')
+                    ->setMethod('PUT')
+                    ->setDomain('example5.com')
+                    ->setTarget('ProductController', 'deleteAction')
+                    ->setDefaults(['routeName' => 'put']);
             }
         );
 
