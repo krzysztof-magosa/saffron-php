@@ -26,6 +26,9 @@ class Router
         $this->factory = $factory;
     }
 
+    /**
+     * @return UrlMatcher\Base
+     */
     protected function getUrlMatcher()
     {
         if (!$this->urlMatcher) {
@@ -35,6 +38,9 @@ class Router
         return $this->urlMatcher;
     }
 
+    /**
+     * @return UrlBuilder\Base
+     */
     protected function getUrlBuilder()
     {
         if (!$this->urlBuilder) {
@@ -44,17 +50,24 @@ class Router
         return $this->urlBuilder;
     }
 
+    /**
+     * Match request against routes.
+     * Returns MatchedRoute if request matches, null otherwise.
+     * 
+     * @param Request $request
+     * @return MatchedRoute|null
+     */
     public function match(Request $request)
     {
         return $this->getUrlMatcher()->match($request);
     }
 
     /**
-     * Builds the link for named route.
+     * Assembles links based on given name and parameters.
      * 
      * @param string $name Name of route
-     * @param array $parameters Parameters to be put into link
-     * @return string Builded link
+     * @param array $parameters Parameters
+     * @return string Built link
      */
     public function assemble($name, array $parameters = [])
     {
