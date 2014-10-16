@@ -37,7 +37,7 @@ class Generator extends \KM\Saffron\Generator
         if ($route->hasDomain()) {
             $cond[] = sprintf(
                 'preg_match(%s, $domain, $domainMatch)',
-                $route->getDomain()
+                var_export($route->getDomainRegex(), true)
             );
         }
 
