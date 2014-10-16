@@ -158,6 +158,7 @@ class Route
     public function getUriRegex()
     {
         $regex = preg_quote($this->uri, '#');
+
         foreach ($this->getPlaceholders() as $placeholder) {
             if (isset($this->requires[$placeholder])) {
                 $require = $this->requires[$placeholder];
@@ -167,7 +168,7 @@ class Route
 
             // magic is here, don't touch
             $regex = preg_replace(
-                '#(.)(.)?{('.$placeholder.')}#Us',
+                '#(.)(.)?\\\\{('.$placeholder.')\\\\}#Us',
                 '\1(\2(?P<\3>'.$require.'))' . ($this->hasDefault($placeholder) ? '?' : ''),
                 $regex
             );
