@@ -17,108 +17,173 @@ namespace KM\Saffron\UrlMatcher;
 
 use KM\Saffron\RoutesCollection;
 use KM\Saffron\Route;
+use KM\Saffron\Code;
 
 class Generator extends \KM\Saffron\Generator
 {
     protected $collection;
+    protected $code;
 
     public function __construct(RoutesCollection $collection)
     {
         $this->collection = $collection;
     }
 
-    protected function compileRoute(Route $route)
+    protected function conditionPrefix($route, &$conditions)
     {
-        $cond[] = sprintf(
-            '0 === strpos($uri, %s)',
-            var_export($route->getPrefix(), true)
-        );
-
-        if ($route->hasDomain()) {
-            $cond[] = sprintf(
-                'preg_match(%s, $domain, $domainMatch)',
-                var_export($route->getDomainRegex(), true)
+        if ($route->needsUriRegex()) {
+            $conditions[] = sprintf(
+                '0 === strpos($uri, %s)',
+                var_export($route->getPrefix(), true)
             );
         }
+        else {
+            $conditions[] = sprintf(
+                '$uri == %s',
+                var_export($route->getPrefix(), true)
+            );   
+        }
+    }
 
+    protected function conditionUriRegex($route, &$conditions)
+    {
         if ($route->needsUriRegex()) {
-            $cond[] = sprintf(
+            $conditions[] = sprintf(
                 'preg_match(%s, $uri, $uriMatch)',
                 var_export($route->getUriRegex(), true)
             );
         }
-        else {
-            $cond[] = sprintf(
-                '%d === strlen($uri)',
-                strlen($route->getPrefix())
-            );
-        }
+    }
 
+    protected function conditionMethod($route, &$conditions)
+    {
         if ($route->hasMethod()) {
-            $cond[] = sprintf(
+            $conditions[] = sprintf(
                 'in_array($method, %s)',
                 $this->formatArray($route->getMethod())
             );
         }
+    }
 
-        $conditions = implode(' && ', $cond);
-        $target = $this->formatArray($route->getTarget());
-        $defaults = $this->formatArray($route->getDefaults());
-
-        if ($route->needsUriRegex()) {
-            return <<<EOB
-        if ($conditions) {
-            return new MatchedRoute(
-                $target,
-                array_replace($defaults, \$uriMatch)
+    protected function conditionHttps($route, &$conditions)
+    {
+        $https = $route->getHttps();
+        if (null !== $https) {
+            $conditions[] = sprintf(
+                '$https === %s',
+                var_export($https, true)
             );
-        }
-EOB;
-        }
-        else {
-            return <<<EOB
-        if ($conditions) {
-            return new MatchedRoute(
-                $target,
-                $defaults
-            );
-        }
-EOB;
         }
     }
 
-    protected function expandRoutes()
+    protected function getArrays($route)
     {
-        $routes = [];
+        $arrays = [];
 
-        foreach ($this->collection as $route) {
-            $routes[] = $this->compileRoute($route);
+        if ($route->hasDomain()) {
+            $arrays[] = '$domainMatch';
+        }
+        if ($route->needsUriRegex()) {
+            $arrays[] = '$uriMatch';
         }
 
-        return implode("\n", $routes);
+        return $arrays;
+    }
+
+    protected function generateRoute($route)
+    {
+        $conditions = [];
+        $this->conditionPrefix($route, $conditions);
+        $this->conditionUriRegex($route, $conditions);
+        $this->conditionMethod($route, $conditions);
+        $this->conditionHttps($route, $conditions);
+
+        $this->code->append(
+            sprintf(
+                'if (%s) {',
+                implode(' && ', $conditions)
+            )
+        );
+
+        $this->code->append('return new MatchedRoute(');
+        $this->code->append($this->formatArray($route->getTarget()).',');
+        $arrays = $this->getArrays($route);
+        if ($arrays) {
+            $this->code->append(
+                sprintf(
+                    'array_replace(%s, %s)',
+                    $this->formatArray($route->getDefaults()),
+                    implode(', ', $arrays)
+                )
+            );
+        }
+        else {
+            $this->code->append($this->formatArray($route->getDefaults()));
+        }
+        $this->code->append(');');
+
+        $this->code->append('}');
+    }
+
+    protected function generateMatch()
+    {
+        $this->code->append('public function match(Request $request) {');
+        $this->code->append('$uri    = $request->getUri();');
+        $this->code->append('$domain = $request->getDomain();');
+        $this->code->append('$method = $request->getMethod();');
+        $this->code->append('$https  = $request->getHttps();');
+        $this->code->append('');
+
+        foreach ($this->collection->groupByDomain() as $routes) {
+            if ($routes->first()->hasDomain()) {
+                $this->code->append(
+                    sprintf(
+                        'if (preg_match(%s, $domain, $domainMatch)) {',
+                        var_export($routes->first()->getDomainRegex(), true)
+                    )
+                );
+            }
+
+            foreach ($routes as $route) {
+                $this->generateRoute($route);
+            }
+
+            if ($routes->first()->hasDomain()) {
+                $this->code->append('}');
+            }
+        }
+
+        $this->code->append('}');
+    }
+
+    protected function generateHeader($className)
+    {
+        $this->code->append(
+<<<EOB
+            <?php
+            use KM\Saffron\UrlMatcher;
+            use KM\Saffron\Request;
+            use KM\Saffron\MatchedRoute;
+            use KM\Saffron\UrlMatcher\Base;
+
+            class $className extends Base {
+EOB
+        );
+    }
+
+    protected function generateFooter()
+    {
+        $this->code->append('}');
     }
 
     public function generate($className)
     {
-        return <<<EOB
-<?php
-use KM\Saffron\UrlMatcher;
-use KM\Saffron\Request;
-use KM\Saffron\MatchedRoute;
-use KM\Saffron\UrlMatcher\Base;
+        $this->code = new Code();
 
-class $className extends Base
-{
-    public function match(Request \$request)
-    {
-        \$method = \$request->getMethod();
-        \$domain = \$request->getDomain();
-        \$uri = \$request->getUri();
+        $this->generateHeader($className);
+        $this->generateMatch();
+        $this->generateFooter();
 
-{$this->expandRoutes()}
-    }
-}
-
-EOB;
+        return (string)$this->code;
     }
 }
