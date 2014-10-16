@@ -17,168 +17,36 @@ namespace KM\Saffron;
 
 class Router
 {
-    protected $routes = [];
-    protected $namedRoutes = [];
+    protected $factory;
+    protected $urlMatcher;
+    protected $urlBuilder;
 
-    /**
-     * Checks whether specified route exists
-     * 
-     * @return bool
-     */
-    protected function hasNamedRoute($name)
+    public function __construct(RouterFactory $factory)
     {
-        return isset($this->namedRoutes[$name]);
+        $this->factory = $factory;
     }
 
-    /**
-     * Appends route to router.
-     * 
-     * @param array $route Route to be added.
-     * @return \KM\Saffron\Router $this for chaining.
-     */
-    public function append(array $route)
+    protected function getUrlMatcher()
     {
-        $this->prepareRoute($route);
-        $this->compileRegex($route);
-        $this->routes[] = $route;
-
-        if ($route['name']) {
-            if ($this->hasNamedRoute($route['name'])) {
-                throw new Exception\RouteAlreadyRegistered(
-                    sprintf(
-                        'Route with name %s is already registered',
-                        $route['name']
-                    )
-                );
-            }
-            $this->namedRoutes[$route['name']] = $route;
+        if (!$this->urlMatcher) {
+            $this->urlMatcher = $this->factory->getUrlMatcher();
         }
 
-        $this->optionalMutations($route);
-        
-        return $this;
+        return $this->urlMatcher;
     }
 
-    protected function optionalMutations(array $route)
+    protected function getUrlBuilder()
     {
-        // Magic for optional parameters
-        // Go through optional parameters, and cut off url behind them
-        $placeholders = array_reverse($route['placeholders']);
-        $optionalPlaceholders = array_keys($route['default']);
-
-        foreach ($placeholders as $placeholder) {
-            if (in_array($placeholder, $optionalPlaceholders)) {
-                // Checks whether string ends with placeholder
-                // If so gets everything before separator before it 
-                // Doesn't cut of beginning char (/)
-                // /product/{router} -> /product
-                // /{product} -> /
-                if (preg_match('@^(..*).?{'.$placeholder.'}$@Us', $route['uri'], $match)) {
-                    $route['uri'] = $match[1];
-                    $this->compileRegex($route);
-                    $this->routes[] = $route;
-                }
-                else {
-                    throw new Exception\InvalidRouteDefinition(
-                        sprintf(
-                            'It makes no sense to set default value for value %s in the middle of uri',
-                            $placeholder
-                        )
-                    );
-                }
-            }
+        if (!$this->urlBuilder) {
+            $this->urlBuilder = $this->factory->getUrlBuilder();
         }
+
+        return $this->urlBuilder;
     }
 
-    /**
-     * Normalizes route by adding missing fields etc.
-     * 
-     * @param array &route
-     */
-    protected function prepareRoute(array &$route)
+    public function match(Request $request)
     {
-        $default = [
-            'name' => null,
-            'require' => [],
-            'default' => [],
-            'domain' => [],
-            'method' => [],
-            'https' => [],
-            'target' => null,
-        ];
-
-        $route = array_replace($default, $route);
-
-        $route['domain'] = (array)$route['domain'];
-        $route['method'] = (array)$route['method'];
-        $route['https'] = (array)$route['https'];
-    
-        preg_match_all('@{(.+)}@Us', $route['uri'], $placeholders);
-        $route['placeholders'] = $placeholders[1];
-
-        // @TODO make it cleaner
-        $pos = strpos($route['uri'], '{');
-        if (false !== $pos) {
-            $length = max($pos - 1, 1);
-        }
-        else {
-            $length = strlen($route['uri']);
-        }
-        $route['prefix'] = substr($route['uri'], 0, $length);
-    }
-
-    /**
-     * Compiles regex for gives route.
-     * 
-     * @param array $route Route to be compiled.
-     */
-    protected function compileRegex(array &$route)
-    {
-        $regex = $route['uri'];
-        foreach ($route['placeholders'] as $placeholder) {
-            if (isset($route['require'][$placeholder])) {
-                $require = $route['require'][$placeholder];
-            } else {
-                $require = '.+';
-            }
-
-            $regex = str_replace(
-                '{'.$placeholder .'}',
-                '(?P<'.$placeholder.'>'.$require.')',
-                $regex
-            );
-        }
-
-        $route['regex'] = '@^'.$regex.'$@Us';
-    }
-
-    /**
-     * Dispatches the request.
-     * 
-     * @param \KM\Saffron\Request $request Request to be dispatched.
-     * @return \KM\Saffron\MatchedRoute|null MatchedRoute object or null
-     */
-    public function dispatch(Request $request)
-    {
-        $method = $request->getMethod();
-        $domain = $request->getDomain();
-        $uri = $request->getUri();
-        $https = $request->getHttps();
-
-        foreach ($this->routes as $route) {
-            if (
-                0 === strpos($uri, $route['prefix']) &&
-                (!$route['method'] || in_array($method, $route['method'])) &&
-                (!$route['domain'] || in_array($domain, $route['domain'])) &&
-                (!$route['https'] || in_array($https, $route['https'])) &&
-                (preg_match($route['regex'], $uri, $match))
-            ) {
-                return new MatchedRoute(
-                    $route['target'],
-                    array_replace($route['default'], $match)
-                );
-            }
-        }
+        return $this->getUrlMatcher()->match($request);
     }
 
     /**
@@ -190,30 +58,6 @@ class Router
      */
     public function assemble($name, array $parameters = [])
     {
-        if (!isset($this->namedRoutes[$name])) {
-            throw new Exception\NoSuchRoute("There is no route $name.");
-        }
-
-        $uri = $this->namedRoutes[$name]['uri'];
-        $defaultParameters = $this->namedRoutes[$name]['default'];
-        foreach (array_replace($defaultParameters, $parameters) as $name => $value) {
-            $uri = str_replace('{'.$name.'}', $value, $uri);
-        }
-
-        return $uri;
-    }
-
-    /**
-     * Magic method for loading object stored by var_export
-     * 
-     * @return \KM\Saffron\Router
-     */
-    static public function __set_state($state)
-    {
-        $instance = new static();
-        $instance->routes = $state['routes'];
-        $instance->namedRoutes = $state['namedRoutes'];
-
-        return $instance;
+        return $this->getUrlBuilder()->assemble($name, $parameters);
     }
 }
