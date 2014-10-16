@@ -20,7 +20,7 @@ class MatchedRoute
     protected $target;
     protected $parameters;
 
-    public function __construct($target, array $parameters)
+    public function __construct($target, array $parameters = [])
     {
         $this->target = $target;
         $this->parameters = $parameters;
@@ -31,25 +31,9 @@ class MatchedRoute
         return isset($this->parameters[$name]) ? $this->parameters[$name] : $default;   
     }
 
-    /**
-     * @deprecated
-     */
-    public function getParam($name, $default = null)
-    {
-        return $this->getParameter($name, $default);
-    }
-
     public function getParameters()
     {
         return $this->parameters;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function getParams()
-    {
-        return $this->getParameters();
     }
 
     public function getTarget()
