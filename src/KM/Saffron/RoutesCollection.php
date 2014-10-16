@@ -31,4 +31,41 @@ class RoutesCollection extends \ArrayIterator
         $this[$name] = $route;
         return $route;
     }
+
+    public function first()
+    {
+        return $this[$this->getFirstKey()];
+    }
+
+    protected function getFirstKey()
+    {
+        foreach ($this as $key => &$value) {
+            return $key;
+        }
+
+        return null;
+    }
+
+    public function groupByDomain()
+    {
+        $result = new self();
+
+        $index = 0;
+        $lastDomain = $this->first()->getDomain();
+
+        foreach ($this as $route) {
+            if ($lastDomain != $route->getDomain()) {
+                $lastDomain = $route->getDomain();
+                $index++;
+            }
+
+            if (!isset($result[$index])) {
+                $result[$index] = new self();
+            }
+
+            $result[$index]->append($route);
+        }
+
+        return $result;
+    }
 }
