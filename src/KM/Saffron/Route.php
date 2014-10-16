@@ -157,7 +157,7 @@ class Route
 
     public function getUriRegex()
     {
-        $regex = $this->uri;
+        $regex = preg_quote($this->uri, '#');
         foreach ($this->getPlaceholders() as $placeholder) {
             if (isset($this->requires[$placeholder])) {
                 $require = $this->requires[$placeholder];
@@ -178,7 +178,7 @@ class Route
 
     public function getDomainRegex()
     {
-        $regex = $this->domain;
+        $regex = preg_quote($this->domain, '#');
     
         // @TODO
 
