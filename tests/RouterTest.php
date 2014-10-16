@@ -31,59 +31,41 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testDispatch($uri, $domain, $method, $https, $expected)
     {
-        $router = new \KM\Saffron\Router();
-        $router
-            ->append(
-                [
-                    'name' => 'create',
-                    'uri' => '/product',
-                    'method' => 'POST',
-                    'domain' => 'example1.com',
-                    'target' => ['ProductController', 'createAction'],
-                    'default' => ['routeName' => 'create'],
-                ]
-            )
-            ->append(
-                [
-                    'name' => 'update',
-                    'uri' => '/product/{id}',
-                    'method' => 'POST',
-                    'domain' => 'example2.com',
-                    'target' => ['ProductController', 'updateAction'],
-                    'default' => ['routeName' => 'update'],
-                ]
-            )
-            ->append(
-                [
-                    'name' => 'get',
-                    'uri' => '/product/{id}',
-                    'method' => 'GET',
-                    'domain' => 'example3.com',
-                    'target' => ['ProductController', 'getAction'],
-                    'default' => ['routeName' => 'get'],
-                ]
-            )
-            ->append(
-                [
-                    'name' => 'delete',
-                    'uri' => '/product/{id}',
-                    'method' => 'DELETE',
-                    'domain' => 'example4.com',
-                    'target' => ['ProductController', 'deleteAction'],
-                    'default' => ['routeName' => 'delete'],
-                ]
-            )
-            ->append(
-                [
-                    'name' => 'put',
-                    'uri' => '/product/{id}',
-                    'method' => 'PUT',
-                    'domain' => 'example5.com',
-                    'https' => true,
-                    'target' => ['ProductController', 'deleteAction'],
-                    'default' => ['routeName' => 'put'],
-                ]
-            );
+        $factory = new \KM\Saffron\RouterFactory(
+            function ($collection) {
+                $collection->route('create')
+                    ->setUri('/product')
+                    ->setMethod('POST')
+                    ->setDomain('example1.com')
+                    ->setTarget('ProductController', 'createAction')
+                    ->setDefaults(['routeName' => 'create']);
+                        
+                $collection->route('update')
+                    ->setUri('/product/{id}')
+                    ->setMethod('POST')
+                    ->setDomain('example2.com')
+                    ->setTarget('ProductController', 'updateAction')
+                    ->setDefaults(['routeName' => 'update']);
+
+                $collection->route('get')
+                    ->setUri('/product/{id}')
+                    ->setMethod('GET')
+                    ->setDomain('example3.com')
+                    ->setTarget('ProductController', 'getAction')
+                    ->setDefaults(['routeName' => 'get']);
+                    
+                $collection->route('delete')
+                    ->setUri('/product/{id}')
+                    ->setMethod('DELETE')
+                    ->setDomain('example4.com')
+                    ->setTarget('ProductController', 'deleteAction')
+                    ->setDefaults(['routeName' => 'delete']);
+            }
+        );
+
+        $factory
+            ->setDebug(true)
+            ->build();
 
         $request = new KM\Saffron\Request();
         $request
@@ -92,8 +74,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
             ->setDomain($domain)
             ->setHttps($https);
 
-        $route = $router->dispatch($request);
-        
+        $route = $factory->build()->match($request);
         $this->assertEquals($expected, $route->getParameter('routeName'));
     }
 
@@ -110,25 +91,25 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testOptionalParam($pattern, $uri)
     {
-        $router = new \KM\Saffron\Router();
-        $router
-            ->append(
-                [
-                    'name' => 'get',
-                    'uri' => $pattern,
-                    'method' => 'GET',
-                    'target' => ['ProductController', 'getAction'],
-                    'default' => ['id' => 12345],
-                ]
-            );
+        $factory = new \KM\Saffron\RouterFactory(
+            function ($collection) use ($pattern) {
+                $collection->route('get')
+                    ->setUri($pattern)
+                    ->setMethod('GET')
+                    ->setDefaults(['id' => 12345]);
+            }
+        );
+
+        $router = $factory
+            ->setDebug(true)
+            ->build();
 
         $request = new KM\Saffron\Request();
         $request
             ->setUri($uri)
             ->setMethod('GET');
 
-        $route = $router->dispatch($request);
-        
+        $route = $router->match($request);
         $this->assertEquals(12345, $route->getParameter('id'));
     }
 
@@ -138,37 +119,38 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testDuplicateOfNamedRoute()
     {
-        $router = new \KM\Saffron\Router();
-        $router->append(['name' => 'home', 'uri' => '/']);
-        $router->append(['name' => 'home', 'uri' => '/home']);
-    }
+        $factory = new \KM\Saffron\RouterFactory(
+            function ($collection) {
+                $collection->route('home')
+                    ->setUri('/');
 
-    /**
-     * @expectedException \KM\Saffron\Exception\InvalidRouteDefinition
-     * @expectedExceptionMessage It makes no sense to set default value for value place in the middle of uri
-     */
-    public function testDefaultValueInMiddle()
-    {
-        $router = new \KM\Saffron\Router();
-        $router->append(
-            [
-                'uri' => '/something/{place}/somethingElse',
-                'default' => [
-                    'place' => 'defaultValue',
-                ]
-            ]
+                $collection->route('home')
+                    ->setUri('/home');
+            }
         );
+
+        $router = $factory
+            ->setDebug(true)
+            ->build();
+
+        $request = new \KM\Saffron\Request();
+        $request->setUri('/test');
+
+        $router->match($request);
     }
 
     public function testAssemble()
     {
-        $router = new \KM\Saffron\Router();
-        $router->append(
-            [
-                'name' => 'contact',
-                'uri' => '/contact/{name}'
-            ]
+        $factory = new \KM\Saffron\RouterFactory(
+            function ($collection) {
+                $collection->route('contact')
+                    ->setUri('/contact/{name}');
+            }
         );
+
+        $router = $factory
+            ->setDebug(true)
+            ->build();
 
         $this->assertEquals('/contact/km', $router->assemble('contact', ['name' => 'km']));
     }
@@ -179,80 +161,60 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testAssembleNoSuchRoute()
     {
-        $router = new \KM\Saffron\Router();
-        $router->append(
-            [
-                'name' => 'contact',
-                'uri' => '/contact/{name}'
-            ]
+        $factory = new \KM\Saffron\RouterFactory(
+            function ($collection) {
+                $collection->route('contact')
+                    ->setUri('/contact/{name}');
+            }
         );
+
+        $router = $factory
+            ->setDebug(true)
+            ->build();
 
         $this->assertEquals('/contact/km', $router->assemble('home'));
     }
 
     public function testRequireRegex1()
     {
-        $router = new \KM\Saffron\Router();
-        $router
-            ->append(
-                [
-                    'name' => 'team',
-                    'uri' => '/team/{name}/{id}',
-                    'target' => ['TeamController', 'dispatch'],
-                    'require' => [
-                        'id' => '\d+'
-                    ]
-                ]
-            );
+        $factory = new \KM\Saffron\RouterFactory(
+            function ($collection) {
+                $collection->route('team')
+                    ->setUri('/team/{name}/{id}')
+                    ->setRequires(['id' => '\d+']);
+            }
+        );
+
+        $router = $factory
+            ->setDebug(true)
+            ->build();
             
         $request = new KM\Saffron\Request();
         $request->setUri('/team/superteam/digit');
-        $route = $router->dispatch($request);
+        $route = $router->match($request);
 
         $this->assertNull($route);
     }
 
     public function testRequireRegex2()
     {
-        $router = new \KM\Saffron\Router();
-        $router
-            ->append(
-                [
-                    'name' => 'team',
-                    'uri' => '/team/{name}/{id}',
-                    'target' => ['TeamController', 'dispatch'],
-                    'require' => [
-                        'id' => '\d+'
-                    ]
-                ]
-            );
-            
-        $request = new KM\Saffron\Request();
+        $factory = new \KM\Saffron\RouterFactory(
+            function ($collection) {
+                $collection->route('team')
+                    ->setUri('/team/{name}/{id}')
+                    ->setRequires(['id' => '\d+']);
+            }
+        );
+
+        $router = $factory
+            ->setDebug(true)
+            ->build();
+
+        $request = new \KM\Saffron\Request();
         $request->setUri('/team/superteam/5');
-        $route = $router->dispatch($request);
+        $route = $router->match($request);
 
         $this->assertNotNull($route);
         $this->assertInstanceOf('\KM\Saffron\MatchedRoute', $route);
-    }
-
-    public function testSetState()
-    {
-        $router1 = new \KM\Saffron\Router();
-        $router1
-            ->append(
-                [
-                    'name' => 'team',
-                    'uri' => '/team/{name}/{id}',
-                    'target' => ['TeamController', 'dispatch'],
-                    'require' => [
-                        'id' => '\d+'
-                    ]
-                ]
-            );
-
-        $state = var_export($router1, true);
-        $router2 = eval('return ' . $state .';');
-
-        $this->assertEquals($router1, $router2);
     }
 }

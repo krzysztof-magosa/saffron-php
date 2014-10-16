@@ -38,7 +38,7 @@ class MatchedRouteTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             ['a' => 1, 'b' => 2, 'c' => 3],
-            $route->getParams()
+            $route->getParameters()
         );
     }
 
