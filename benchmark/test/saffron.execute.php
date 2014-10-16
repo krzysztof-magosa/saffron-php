@@ -7,7 +7,7 @@ $factory = new RouterFactory(
         for ($i = 1; $i <= 9; $i++) {
             $collection->route('test'.$i)
                 ->setUri('/test'.$i.'/{slug}/{id}')
-                ->setTarget('TestController')
+                ->setTarget('\TestController')
                 ->setRequires(
                     [
                         'slug' => '\w+',
@@ -18,7 +18,7 @@ $factory = new RouterFactory(
 
         $collection->route('test')
             ->setUri('/test/{slug}/{id}')
-            ->setTarget('TestController')
+            ->setTarget('\TestController')
             ->setRequires(
                 [
                     'slug' => '\w+',

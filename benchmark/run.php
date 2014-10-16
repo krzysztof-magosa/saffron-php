@@ -6,9 +6,9 @@ $_SERVER['REQUEST_URI'] = '/test/slugifiedtext/123';
 $_SERVER['REQUEST_METHOD'] = 'GET';
 $_SERVER['HTTP_HOST'] = 'example.com';
 
-class Controller
+class TestController
 {
-    public function action($slug, $id)
+    public function indexAction($slug, $id)
     {
     }
 }
