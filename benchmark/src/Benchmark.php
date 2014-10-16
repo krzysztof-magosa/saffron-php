@@ -23,16 +23,24 @@ class Benchmark
     public function summary()
     {
         asort($this->timings, SORT_NUMERIC);
-        $max = max($this->timings);
+
+        $max = max(
+            array_map(
+                function ($item) {
+                    return $this->iterations / $item / 1000;
+                },
+                $this->timings
+            )
+        );
 
         foreach ($this->timings as $name => $timing) {
             $speed = $this->iterations / $timing / 1000;
-            $bar = ($max - $timing) / $max * ($this->barWidth-1);
+            $bar = $speed / $max * ($this->barWidth-1);
 
             echo sprintf(
                 "%s %s %s\n",
                 sprintf('%13.s', $name),
-                sprintf('%5.2f k/s', $speed),
+                sprintf('%6.2f k/s', $speed),
                 str_repeat('▒', $bar+1)
             );
         }
