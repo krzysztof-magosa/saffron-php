@@ -200,12 +200,12 @@ class Route
     {
         $tokens = preg_split(
             '#([^}]?\{\w+\})#s',
-            $this->uri,
+            substr($this->uri, 1),
             -1,
             PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
         );
         
-        $regex = '';
+        $regex = preg_quote(substr($this->uri, 0, 1), '#');
         foreach ($tokens as $token) {
             if (preg_match('#^(?P<delimiter>.)?\{(?P<placeholder>\w+)\}$#s', $token, $match)) {
                 $regex .= sprintf(
