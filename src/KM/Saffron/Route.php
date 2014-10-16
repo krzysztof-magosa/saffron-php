@@ -155,7 +155,7 @@ class Route
         return substr($this->uri, 0, $length);
     }
 
-    public function getRegex()
+    public function getUriRegex()
     {
         $regex = $this->uri;
         foreach ($this->getPlaceholders() as $placeholder) {
@@ -176,7 +176,16 @@ class Route
         return '#^'.$regex.'$#Us';
     }
 
-    public function needsRegex()
+    public function getDomainRegex()
+    {
+        $regex = $this->domain;
+    
+        // @TODO
+
+        return '#^'.$regex.'$#Us';
+    }    
+
+    public function needsUriRegex()
     {
         return $this->getPrefix() != $this->getUri();
     }

@@ -34,10 +34,17 @@ class Generator extends \KM\Saffron\Generator
             var_export($route->getPrefix(), true)
         );
 
-        if ($route->needsRegex()) {
+        if ($route->hasDomain()) {
             $cond[] = sprintf(
-                'preg_match(%s, $uri, $match)',
-                var_export($route->getRegex(), true)
+                'preg_match(%s, $domain, $domainMatch)',
+                $route->getDomain()
+            );
+        }
+
+        if ($route->needsUriRegex()) {
+            $cond[] = sprintf(
+                'preg_match(%s, $uri, $uriMatch)',
+                var_export($route->getUriRegex(), true)
             );
         }
         else {
@@ -54,23 +61,16 @@ class Generator extends \KM\Saffron\Generator
             );
         }
 
-        if ($route->hasDomain()) {
-            $cond[] = sprintf(
-                'in_array($domain, %s)',
-                $this->formatArray($route->getDomain())
-            );
-        }
-
         $conditions = implode(' && ', $cond);
         $target = $this->formatArray($route->getTarget());
         $defaults = $this->formatArray($route->getDefaults());
 
-        if ($route->needsRegex()) {
+        if ($route->needsUriRegex()) {
             return <<<EOB
         if ($conditions) {
             return new MatchedRoute(
                 $target,
-                array_replace($defaults, \$match)
+                array_replace($defaults, \$uriMatch)
             );
         }
 EOB;
