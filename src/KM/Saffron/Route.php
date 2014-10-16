@@ -102,6 +102,11 @@ class Route
         return $this;
     }
 
+    public function getRequire($name)
+    {
+        return isset($this->requires[$name]) ? $this->requires[$name] : '.+';
+    }
+
     public function getRequires()
     {
         return $this->requires;
@@ -134,10 +139,16 @@ class Route
         return $this->target;
     }
 
-    public function getPlaceholders()
+    public function getUriPlaceholders()
     {
         preg_match_all('@{(\w+)}@Us', $this->uri, $match);
         return $match[1];
+    }
+
+    public function getDomainPlaceholders()
+    {
+        preg_match_all('@{(\w+)}@Us', $this->domain, $match);
+        return $match[1];   
     }
 
     public function getPrefix()
@@ -155,35 +166,90 @@ class Route
         return substr($this->uri, 0, $length);
     }
 
-    public function getUriRegex()
+    public function isOptionalUriParameter($name)
     {
-        $regex = preg_quote($this->uri, '#');
-
-        foreach ($this->getPlaceholders() as $placeholder) {
-            if (isset($this->requires[$placeholder])) {
-                $require = $this->requires[$placeholder];
-            } else {
-                $require = '.+';
+        foreach (array_reverse($this->getUriPlaceholders()) as $item) {
+            if (!$this->hasDefault($item)) {
+                break;
             }
 
-            // magic is here, don't touch
-            $regex = preg_replace(
-                '#(.)(.)?\\\\{('.$placeholder.')\\\\}#Us',
-                '\1(\2(?P<\3>'.$require.'))' . ($this->hasDefault($placeholder) ? '?' : ''),
-                $regex
-            );
+            if ($item == $name) {
+                return true;
+            }
         }
 
-        return '#^'.$regex.'$#Us';
+        return false;
+    }
+
+    public function isOptionalDomainParameter($name)
+    {
+        foreach ($this->getDomainPlaceholders() as $item) {
+            if (!$this->hasDefault($item)) {
+                break;
+            }
+
+            if ($item == $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getUriRegex()
+    {
+        $tokens = preg_split(
+            '#([^}]?\{\w+\})#s',
+            $this->uri,
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+        );
+        
+        $regex = '';
+        foreach ($tokens as $token) {
+            if (preg_match('#^(?P<delimiter>.)?\{(?P<placeholder>\w+)\}$#s', $token, $match)) {
+                $regex .= sprintf(
+                    '(%s(?P<%s>%s))%s',
+                    isset($match['delimiter']) ? preg_quote($match['delimiter'], '#') : '',
+                    preg_quote($match['placeholder'], '#'),
+                    $this->getRequire($match['placeholder']),
+                    $this->isOptionalUriParameter($match['placeholder']) ? '?' : ''
+                );
+            }
+            else {
+                $regex .= preg_quote($token, '#');
+            }
+        }
+
+        return '#^'.$regex.'$#s';
     }
 
     public function getDomainRegex()
     {
-        $regex = preg_quote($this->domain, '#');
-    
-        // @TODO
+        $tokens = preg_split(
+            '#({\w+\}[^{]?)#s',
+            $this->domain,
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+        );
 
-        return '#^'.$regex.'$#Us';
+        $regex = '';
+        foreach ($tokens as $token) {
+            if (preg_match('#^\{(?P<placeholder>\w+)\}(?P<delimiter>.)?$#s', $token, $match)) {
+                $regex .= sprintf(
+                    '((?P<%s>%s)%s)%s',
+                    preg_quote($match['placeholder'], '#'),
+                    $this->getRequire($match['placeholder']),
+                    isset($match['delimiter']) ? preg_quote($match['delimiter'], '#') : '',
+                    $this->isOptionalDomainParameter($match['placeholder']) ? '?' : ''
+                );
+            }
+            else {
+                $regex .= preg_quote($token, '#');
+            }
+        }
+
+        return '#^'.$regex.'$#s';
     }    
 
     public function needsUriRegex()
