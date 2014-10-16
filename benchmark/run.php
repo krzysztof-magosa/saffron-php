@@ -16,27 +16,15 @@ class Controller
 $bench = new \KM\Benchmark();
 $bench
     ->execute(
-        'Saffron',
+       'Saffron',
         function () {
             require 'test/saffron.php';
         }
     )
     ->execute(
-        'Saffron (e)',
+       'Saffron (e)',
         function () {
             require 'test/saffron.execute.php';
-        }
-    )
-    ->execute(
-        'Saffron (c)',
-        function () {
-            require 'test/saffron.compiled.php';
-        }
-    )
-    ->execute(
-        'Saffron (e+c)',
-        function () {
-            require 'test/saffron.execute.compiled.php';
         }
     )
     ->execute(

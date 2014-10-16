@@ -1,6 +1,36 @@
 <?php
-$router = require __DIR__ . '/saffron/router.php';
-$route = $router->dispatch(\KM\Saffron\Request::createFromGlobals());
+use \KM\Saffron\RouterFactory;
+use \KM\Saffron\Executor;
 
-$exec = new \KM\Saffron\Executor($route);
-$exec->fire();
+$factory = new RouterFactory(
+    function ($collection) {
+        for ($i = 1; $i <= 9; $i++) {
+            $collection->route('test'.$i)
+                ->setUri('/test'.$i.'/{slug}/{id}')
+                ->setTarget('TestController')
+                ->setRequires(
+                    [
+                        'slug' => '\w+',
+                        'id' => '\d+',
+                    ]
+                );
+        }
+
+        $collection->route('test')
+            ->setUri('/test/{slug}/{id}')
+            ->setTarget('TestController')
+            ->setRequires(
+                [
+                    'slug' => '\w+',
+                    'id' => '\d+',
+                ]
+            );
+    }
+);
+
+$router = $factory
+    ->build();
+
+$route = $router->match(\KM\Saffron\Request::createFromGlobals());
+$executor = new Executor($route);
+$executor->fire();
