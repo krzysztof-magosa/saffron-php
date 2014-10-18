@@ -20,7 +20,7 @@ class RouterFactory
     protected $collection;
     protected $initClosure;
     protected $cacheDir;
-    protected $cacheSuffix;
+    protected $classSuffix;
     protected $debug = false;
 
     public function __construct(callable $initClosure)
@@ -43,9 +43,9 @@ class RouterFactory
         return $this->cacheDir;
     }
 
-    public function setCacheSuffix($suffix)
+    public function setClassSuffix($suffix)
     {
-        $this->cacheSuffix = $suffix;
+        $this->classSuffix = $suffix;
         return $this;
     }
 
@@ -55,20 +55,20 @@ class RouterFactory
         return $this;
     }
 
-    public function getCacheSuffix()
+    public function getClassSuffix()
     {
         static $iteration = 0;
 
         if ($this->debug) {
-            return $this->cacheSuffix.md5(microtime(true).(++$iteration));
+            return $this->classSuffix.md5(microtime(true).(++$iteration));
         }
 
-        return $this->cacheSuffix;
+        return $this->classSuffix;
     }
 
     public function getUrlMatcher()
     {
-        $className = 'KM_Saffron_UrlMatcher_'.$this->getCacheSuffix();
+        $className = 'KM_Saffron_UrlMatcher_'.$this->getClassSuffix();
         $cacheFile = $this->getCacheDir().'/'.$className.'.php';
 
         if (!is_readable($cacheFile) || $this->debug) {
@@ -88,7 +88,7 @@ class RouterFactory
 
     public function getUrlBuilder()
     {
-        $className = 'KM_Saffron_UrlBuilder_'.$this->getCacheSuffix();
+        $className = 'KM_Saffron_UrlBuilder_'.$this->getClassSuffix();
         $cacheFile = $this->getCacheDir().'/'.$className.'.php';
 
         if (!is_readable($cacheFile) || $this->debug) {
