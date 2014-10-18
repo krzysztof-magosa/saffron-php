@@ -176,36 +176,6 @@ class Route
         return substr($this->uri, 0, $length);
     }
 
-    public function isOptionalUriParameter($name)
-    {
-        foreach (array_reverse($this->getUriPlaceholders()) as $item) {
-            if (!$this->hasDefault($item)) {
-                break;
-            }
-
-            if ($item == $name) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function isOptionalDomainParameter($name)
-    {
-        foreach ($this->getDomainPlaceholders() as $item) {
-            if (!$this->hasDefault($item)) {
-                break;
-            }
-
-            if ($item == $name) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function getUriRegex()
     {
         $tokens = preg_split(
@@ -223,7 +193,7 @@ class Route
                     isset($match['delimiter']) ? preg_quote($match['delimiter'], '#') : '',
                     preg_quote($match['placeholder'], '#'),
                     $this->getRequire($match['placeholder']),
-                    $this->isOptionalUriParameter($match['placeholder']) ? '?' : ''
+                    $this->hasDefault($match['placeholder']) ? '?' : ''
                 );
             }
             else {
@@ -251,7 +221,7 @@ class Route
                     preg_quote($match['placeholder'], '#'),
                     $this->getRequire($match['placeholder']),
                     isset($match['delimiter']) ? preg_quote($match['delimiter'], '#') : '',
-                    $this->isOptionalDomainParameter($match['placeholder']) ? '?' : ''
+                    $this->hasDefault($match['placeholder']) ? '?' : ''
                 );
             }
             else {
