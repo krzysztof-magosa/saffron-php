@@ -78,6 +78,10 @@ class Generator extends \KM\Saffron\Generator
     {
         $arrays = [];
 
+        if ($route->hasDefaults()) {
+            $arrays[] = $this->formatArray($route->getDefaults());
+        }
+
         if ($route->hasDomain()) {
             $arrays[] = '$domainMatch';
         }
@@ -121,21 +125,25 @@ class Generator extends \KM\Saffron\Generator
 
         $arrays = $this->getArraysOfParameters($route);
         if ($arrays) {
-            $this->code->append(
-                sprintf(
-                    '$this->filterParameters(array_replace(%s, %s))',
-                    $this->formatArray($route->getDefaults()),
-                    implode(', ', $this->getArraysOfParameters($route))
-                )
-            );
+            if (count($arrays) >= 2) {
+                $this->code->append(
+                    sprintf(
+                        '$this->filterParameters(array_replace(%s))',
+                        implode(', ', $this->getArraysOfParameters($route))
+                    )
+                );
+            }
+            else {
+                $this->code->append(
+                    sprintf(
+                        '$this->filterParameters(%s)',
+                        $this->getArraysOfParameters($route)[0]
+                    )
+                );
+            }
         }
         else {
-            $this->code->append(
-                sprintf(
-                    '$this->filterParameters(%s)',
-                    $this->formatArray($route->getDefaults())
-                )
-            );   
+            $this->code->append('[]');
         }
 
         $this->code->append(');');
@@ -160,11 +168,15 @@ class Generator extends \KM\Saffron\Generator
         $this->code
             ->append('public function match(Request $request) {')
             ->append('$uri    = $request->getUri();')
-            ->append('$domain = $request->getDomain();')
-            ->append('$method = $request->getMethod();')
-            ->append('$https  = $request->getHttps();')
-            ->append('$allowedMethods = [];')
-            ->append('');
+            ->append('$allowedMethods = [];');
+
+        if ($this->collection->hasMethod()) {
+            $this->code->append('$domain = $request->getDomain()');
+        }
+
+        if ($this->collection->hasHttps()) {
+            $this->code->append('$https = $request->getHttps()');
+        }
 
         foreach ($this->collection->groupByDomain() as $routes) {
             if ($routes->first()->hasDomain()) {
