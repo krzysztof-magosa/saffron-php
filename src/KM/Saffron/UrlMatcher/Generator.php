@@ -78,6 +78,10 @@ class Generator extends \KM\Saffron\Generator
     {
         $arrays = [];
 
+        if ($route->hasDefaults()) {
+            $arrays[] = $this->formatArray($route->getDefaults());
+        }
+
         if ($route->hasDomain()) {
             $arrays[] = '$domainMatch';
         }
@@ -112,35 +116,32 @@ class Generator extends \KM\Saffron\Generator
         }
 
         $this->code
-            ->append('$result = new RoutingResult();')
-            ->append('$result->setSuccessful(true);')
-            ->append(
-                sprintf(
-                    '$result->setTarget(%s);',
-                    $this->formatArray($route->getTarget())
-                )
-            );
+            ->append('return new RoutingResult(')
+            ->append('true,')
+            ->append('false,')
+            ->append('false,')
+            ->append('[],')
+            ->append($this->formatArray($route->getTarget()).',');
 
         $arrays = $this->getArraysOfParameters($route);
-        if ($arrays) {
+        if (count($arrays) >= 2) {
             $this->code->append(
                 sprintf(
-                    '$result->setParameters($this->filterParameters(array_replace(%s, %s)));',
-                    $this->formatArray($route->getDefaults()),
-                    implode(', ', $arrays)
+                    'array_replace(%s)',
+                    implode(', ', $this->getArraysOfParameters($route))
                 )
-            );
+            );    
         }
         else {
             $this->code->append(
                 sprintf(
-                    '$result->setParameters($this->filterParameters(%s));',
-                    $this->formatArray($route->getDefaults())
+                    '%s',
+                    implode(', ', $this->getArraysOfParameters($route))
                 )
             );
         }
-
-        $this->code->append('return $result;');
+        
+        $this->code->append(');');
 
         if ($route->hasMethod()) {
             $this->code->append('}');
@@ -188,11 +189,14 @@ class Generator extends \KM\Saffron\Generator
         }
 
         $this->code
-            ->append('$result = new RoutingResult();')
-            ->append('$result->setResourceNotFound(empty($allowedMethods));')
-            ->append('$result->setMethodNotAllowed(!empty($allowedMethods));')
-            ->append('$result->setAllowedMethods(array_unique($allowedMethods));')
-            ->append('return $result;');
+            ->append('return new RoutingResult(')
+            ->append('false,')
+            ->append('!empty($allowedMethods),')
+            ->append('empty($allowedMethods),')
+            ->append('array_unique($allowedMethods),')
+            ->append('[],')
+            ->append('[]')
+            ->append(');');
 
         $this->code->append('}');
     }
