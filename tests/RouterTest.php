@@ -13,60 +13,133 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+use KM\Saffron\RouterFactory;
+use KM\Saffron\Request;
+
 class RouterTest extends PHPUnit_Framework_TestCase
 {
-    public function provider()
+    public function providerAssemble()
     {
         return [
-            ['/product', 'example1.com', 'POST', false, 'create'],
-            ['/product/100', 'example2.com', 'POST', false, 'update'],
-            ['/product/200', 'example3.com', 'GET', false, 'get'],
-            ['/product/300', 'example4.com', 'DELETE', false, 'delete'],
-            ['/product/400', 'example5.com', 'PUT', true, 'put'],
+            [
+                'uri' => '/person/{name}/{id}',
+                'defaults' => ['id' => 5],
+                'parameters' => ['name' => 'john'],
+                'result' => '/person/john/5',
+            ],
+            [
+                'uri' => '/person/{name}',
+                'defaults' => [],
+                'parameters' => ['name' => 'john'],
+                'result' => '/person/john',
+            ],
+            [
+                'uri' => '/person/{name}',
+                'defaults' => ['name' => 'john'],
+                'parameters' => [],
+                'result' => '/person/john',
+            ],
+            [
+                'uri' => '/{module}/{name}',
+                'defaults' => ['name' => 'john'],
+                'parameters' => ['module' => 'person'],
+                'result' => '/person/john',
+            ],
+        ];
+    }
+
+    public function providerMatch()
+    {
+        return [
+            ['/home', 'www.test99.com', 'GET', false, false, false, [], ['route' => 'test99']],
+            ['/home', 'www.test1.com', 'GET', false, false, false, [], ['route' => 'test1']],
+            ['/home', 'www.test1.com', 'POST', false, false, false, [], ['route' => 'test2']],
+
+            ['/person/john', 'www.test3.com', 'GET', null, false, false, [], ['route' => 'test3', 'slug' => 'john']],
+            ['/person', 'www.test3.com', 'GET', false, false, false, [], ['route' => 'test3', 'slug' => 'jack']],
+
+            ['/account', 'www.test4.com', 'GET', true, false, false, [], ['route' => 'test4a']],
+            ['/account', 'www.test4.com', 'GET', false, false, false, [], ['route' => 'test4b']],
+
+            ['/info/5', 'www.test5.com', 'GET', false, false, false, [], ['route' => 'test5a', 'id' => 5]],
+            ['/info/news', 'www.test5.com', 'GET', false, false, false, [], ['route' => 'test5b', 'slug' => 'news']],
+
+            ['/methods/get', 'www.test6.com', 'POST', false, false, true, ['GET'], []],
+            ['/not-found', 'www.test7.com', 'GET', false, true, false, [], []],
         ];
     }
 
     /**
-     * @dataProvider provider
+     * @dataProvider providerMatch
      */
-    public function testDispatch($uri, $domain, $method, $https, $expected)
+    public function testMatch($uri, $domain, $method, $https, $expectedResourceNotFound, $expectedMethodNotAllowed, array $expectedAllowedMethods, array $expectedParameters)
     {
-        $factory = new \KM\Saffron\RouterFactory(
+        $factory = new RouterFactory(
             function ($collection) {
-                $collection->route('create')
-                    ->setUri('/product')
-                    ->setMethod('POST')
-                    ->setDomain('example1.com')
-                    ->setTarget('ProductController', 'createAction')
-                    ->setDefaults(['routeName' => 'create']);
-                        
-                $collection->route('update')
-                    ->setUri('/product/{id}')
-                    ->setMethod('POST')
-                    ->setDomain('example2.com')
-                    ->setTarget('ProductController', 'updateAction')
-                    ->setDefaults(['routeName' => 'update']);
-
-                $collection->route('get')
-                    ->setUri('/product/{id}')
+                $collection->route('test1')
+                    ->setUri('/home')
+                    ->setDomain('www.test1.com')
                     ->setMethod('GET')
-                    ->setDomain('example3.com')
-                    ->setTarget('ProductController', 'getAction')
-                    ->setDefaults(['routeName' => 'get']);
-                    
-                $collection->route('delete')
-                    ->setUri('/product/{id}')
-                    ->setMethod('DELETE')
-                    ->setDomain('example4.com')
-                    ->setTarget('ProductController', 'deleteAction')
-                    ->setDefaults(['routeName' => 'delete']);
+                    ->setTarget('TestController', 'createAction')
+                    ->setDefaults(['route' => 'test1']);
 
-                $collection->route('put')
-                    ->setUri('/product/{id}')
-                    ->setMethod('PUT')
-                    ->setDomain('example5.com')
-                    ->setTarget('ProductController', 'deleteAction')
-                    ->setDefaults(['routeName' => 'put']);
+                $collection->route('test2')
+                    ->setUri('/home')
+                    ->setDomain('www.test1.com')
+                    ->setMethod('POST')
+                    ->setTarget('TestController', 'createAction')
+                    ->setDefaults(['route' => 'test2']);
+
+                $collection->route('test3')
+                    ->setUri('/person/{slug}')
+                    ->setDomain('www.test3.com')
+                    ->setMethod('GET')
+                    ->setTarget('TestController', 'createAction')
+                    ->setDefaults(['route' => 'test3', 'slug' => 'jack']);
+
+                $collection->route('test4a')
+                    ->setUri('/account')
+                    ->setDomain('www.test4.com')
+                    ->setMethod('GET')
+                    ->setHttps(true)
+                    ->setTarget('TestController', 'createAction')
+                    ->setDefaults(['route' => 'test4a']);
+
+                $collection->route('test4b')
+                    ->setUri('/account')
+                    ->setDomain('www.test4.com')
+                    ->setMethod('GET')
+                    ->setHttps(false)
+                    ->setTarget('TestController', 'createAction')
+                    ->setDefaults(['route' => 'test4b']);
+
+                $collection->route('test5a')
+                    ->setUri('/info/{id}')
+                    ->setDomain('www.test5.com')
+                    ->setMethod('GET')
+                    ->setTarget('TestController', 'createAction')
+                    ->setDefaults(['route' => 'test5a'])
+                    ->setRequires(['id' => '\d+']);
+
+                $collection->route('test5b')
+                    ->setUri('/info/{slug}')
+                    ->setDomain('www.test5.com')
+                    ->setMethod('GET')
+                    ->setTarget('TestController', 'createAction')
+                    ->setDefaults(['route' => 'test5b'])
+                    ->setRequires(['slug' => '\w+']);
+
+                $collection->route('test6')
+                    ->setUri('/methods/get')
+                    ->setDomain('www.test6.com')
+                    ->setMethod('GET')
+                    ->setTarget('TestController', 'createAction');
+
+                $collection->route('test99')
+                    ->setUri('/home')
+                    ->setMethod('GET')
+                    ->setTarget('TestController', 'createAction')
+                    ->setDefaults(['route' => 'test99']);
             }
         );
 
@@ -74,50 +147,18 @@ class RouterTest extends PHPUnit_Framework_TestCase
             ->setDebug(true)
             ->build();
 
-        $request = new KM\Saffron\Request();
+        $request = new Request();
         $request
             ->setUri($uri)
-            ->setMethod($method)
             ->setDomain($domain)
+            ->setMethod($method)
             ->setHttps($https);
 
-        $route = $factory->build()->match($request);
-        $this->assertEquals($expected, $route->getParameter('routeName'));
-    }
-
-    public function optionalProvider()
-    {
-        return [
-            [ '/product/{id}', '/product' ],
-            [ '/{id}', '/' ]
-        ];
-    }
-
-    /**
-     * @dataProvider optionalProvider
-     */
-    public function testOptionalParam($pattern, $uri)
-    {
-        $factory = new \KM\Saffron\RouterFactory(
-            function ($collection) use ($pattern) {
-                $collection->route('get')
-                    ->setUri($pattern)
-                    ->setMethod('GET')
-                    ->setDefaults(['id' => 12345]);
-            }
-        );
-
-        $router = $factory
-            ->setDebug(true)
-            ->build();
-
-        $request = new KM\Saffron\Request();
-        $request
-            ->setUri($uri)
-            ->setMethod('GET');
-
-        $route = $router->match($request);
-        $this->assertEquals(12345, $route->getParameter('id'));
+        $result = $factory->build()->match($request);
+        $this->assertEquals($expectedResourceNotFound, $result->isResourceNotFound());
+        $this->assertEquals($expectedMethodNotAllowed, $result->isMethodNotAllowed());
+        $this->assertEquals($expectedAllowedMethods, $result->getAllowedMethods());
+        $this->assertEquals($expectedParameters, $result->getParameters());
     }
 
     /**
@@ -126,7 +167,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testDuplicateOfNamedRoute()
     {
-        $factory = new \KM\Saffron\RouterFactory(
+        $factory = new RouterFactory(
             function ($collection) {
                 $collection->route('home')
                     ->setUri('/');
@@ -140,18 +181,22 @@ class RouterTest extends PHPUnit_Framework_TestCase
             ->setDebug(true)
             ->build();
 
-        $request = new \KM\Saffron\Request();
+        $request = new Request();
         $request->setUri('/test');
 
         $router->match($request);
     }
 
-    public function testAssemble()
+    /**
+     * @dataProvider providerAssemble
+     */
+    public function testAssemble($uri, $defaults, $parameters, $result)
     {
-        $factory = new \KM\Saffron\RouterFactory(
-            function ($collection) {
-                $collection->route('contact')
-                    ->setUri('/contact/{name}');
+        $factory = new RouterFactory(
+            function ($collection) use ($uri, $defaults) {
+                $collection->route('test')
+                    ->setUri($uri)
+                    ->setDefaults($defaults);
             }
         );
 
@@ -159,7 +204,10 @@ class RouterTest extends PHPUnit_Framework_TestCase
             ->setDebug(true)
             ->build();
 
-        $this->assertEquals('/contact/km', $router->assemble('contact', ['name' => 'km']));
+        $this->assertEquals(
+            $result,
+            $router->assemble('test', $parameters)
+        );
     }
 
     /**
@@ -168,7 +216,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testAssembleNoSuchRoute()
     {
-        $factory = new \KM\Saffron\RouterFactory(
+        $factory = new RouterFactory(
             function ($collection) {
                 $collection->route('contact')
                     ->setUri('/contact/{name}');
@@ -180,48 +228,5 @@ class RouterTest extends PHPUnit_Framework_TestCase
             ->build();
 
         $this->assertEquals('/contact/km', $router->assemble('home'));
-    }
-
-    public function testRequireRegex1()
-    {
-        $factory = new \KM\Saffron\RouterFactory(
-            function ($collection) {
-                $collection->route('team')
-                    ->setUri('/team/{name}/{id}')
-                    ->setRequires(['id' => '\d+']);
-            }
-        );
-
-        $router = $factory
-            ->setDebug(true)
-            ->build();
-            
-        $request = new KM\Saffron\Request();
-        $request->setUri('/team/superteam/digit');
-        $route = $router->match($request);
-
-        $this->assertNull($route);
-    }
-
-    public function testRequireRegex2()
-    {
-        $factory = new \KM\Saffron\RouterFactory(
-            function ($collection) {
-                $collection->route('team')
-                    ->setUri('/team/{name}/{id}')
-                    ->setRequires(['id' => '\d+']);
-            }
-        );
-
-        $router = $factory
-            ->setDebug(true)
-            ->build();
-
-        $request = new \KM\Saffron\Request();
-        $request->setUri('/team/superteam/5');
-        $route = $router->match($request);
-
-        $this->assertNotNull($route);
-        $this->assertInstanceOf('\KM\Saffron\MatchedRoute', $route);
     }
 }
