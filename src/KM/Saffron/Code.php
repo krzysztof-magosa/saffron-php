@@ -9,6 +9,7 @@ class Code
     public function append($text)
     {
         $this->code .= $text."\n";
+        return $this;
     }
 
     public function __toString()
