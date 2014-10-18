@@ -19,8 +19,10 @@ use KM\Saffron\Exception\RouteAlreadyRegistered;
 
 class RoutesCollection extends \ArrayIterator
 {
-    protected $routes = [];
-
+    /**
+     * @param string $name Name of route
+     * @return RoutesCollection
+     */
     public function route($name)
     {
         if ($this->offsetExists($name)) {
@@ -39,23 +41,23 @@ class RoutesCollection extends \ArrayIterator
 
     protected function getFirstKey()
     {
-        foreach ($this as $key => &$value) {
+        foreach ($this as $key => $value) {
             return $key;
         }
 
         return null;
     }
 
-    public function groupByDomain()
+    protected function groupBy(\Closure $func)
     {
+        $index = 0;
+        $lastValue = $func($this->first());
+
         $result = new self();
 
-        $index = 0;
-        $lastDomain = $this->first()->getDomain();
-
         foreach ($this as $route) {
-            if ($lastDomain != $route->getDomain()) {
-                $lastDomain = $route->getDomain();
+            if ($lastValue != ($value = $func($route))) {
+                $lastDomain = $value;
                 $index++;
             }
 
@@ -66,6 +68,15 @@ class RoutesCollection extends \ArrayIterator
             $result[$index]->append($route);
         }
 
-        return $result;
+        return $result;        
+    }
+
+    public function groupByDomain()
+    {
+        return $this->groupBy(
+            function ($route) {
+                return $route->getDomain();
+            }
+        );
     }
 }
