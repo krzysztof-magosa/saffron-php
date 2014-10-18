@@ -10,40 +10,14 @@ class RoutingResult
     protected $target = [];
     protected $parameters = [];
 
-    public function setSuccessful($value)
+    public function __construct($successful, $methodNotAllowed, $resourceNotFound, array $allowedMethods, array $target, array $parameters)
     {
-        $this->successful = $value;
-        return $this;
-    }
-
-    public function setMethodNotAllowed($value)
-    {
-        $this->methodNotAllowed = $value;
-        return $this;
-    }
-
-    public function setResourceNotFound($value)
-    {
-        $this->resourceNotFound = $value;
-        return $this;
-    }
-
-    public function setAllowedMethods(array $values)
-    {
-        $this->allowedMethods = $values;
-        return $this;
-    }
-
-    public function setTarget(array $value)
-    {
-        $this->target = $value;
-        return $this;
-    }
-
-    public function setParameters(array $values)
-    {
-        $this->parameters = $values;
-        return $this;
+        $this->successful = $successful;
+        $this->methodNotAllowed = $methodNotAllowed;
+        $this->resourceNotFound = $resourceNotFound;
+        $this->allowedMethods = $allowedMethods;
+        $this->target = $target;
+        $this->parameters = $parameters;
     }
 
     /**
