@@ -96,6 +96,11 @@ class Route
         return $this->https;
     }
 
+    public function hasHttps()
+    {
+        return null !== $this->https;
+    }
+
     public function setRequires(array $requires)
     {
         $this->requires = $requires;
