@@ -3,12 +3,12 @@ namespace KM\Saffron;
 
 class RoutingResult
 {
-    protected $successful;
-    protected $methodNotAllowed;
-    protected $resourceNotFound;
-    protected $allowedMethods;
-    protected $target;
-    protected $parameters;
+    protected $successful = false;
+    protected $methodNotAllowed = false;
+    protected $resourceNotFound = false;
+    protected $allowedMethods = [];
+    protected $target = [];
+    protected $parameters = [];
 
     public function setSuccessful($value)
     {
