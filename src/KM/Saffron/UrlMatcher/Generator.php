@@ -230,6 +230,10 @@ EOB
         $this->code->append('}');
     }
 
+    /**
+     * @param string $className
+     * @return string
+     */
     public function generate($className)
     {
         $this->generateHeader($className);
