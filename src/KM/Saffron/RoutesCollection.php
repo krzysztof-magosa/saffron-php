@@ -57,7 +57,7 @@ class RoutesCollection extends \ArrayIterator
 
         foreach ($this as $route) {
             if ($lastValue != ($value = $func($route))) {
-                $lastDomain = $value;
+                $lastValue = $value;
                 $index++;
             }
 
