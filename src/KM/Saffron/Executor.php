@@ -15,6 +15,8 @@
  */
 namespace KM\Saffron;
 
+use KM\Saffron\RoutingResult;
+
 class Executor
 {
     protected $controller;
@@ -23,13 +25,13 @@ class Executor
     protected $preDispatch;
     protected $postDispatch;
 
-    public function __construct($route = null)
+    public function __construct(RoutingResult $result = null)
     {
-        if ($route instanceof MatchedRoute) {
+        if ($result) {
             $this
-                ->setController($route->getTarget()[0])
-                ->setMethod($route->getTarget()[1])
-                ->setParameters($route->getParameters());
+                ->setController($result->getTarget()[0])
+                ->setMethod($result->getTarget()[1])
+                ->setParameters($result->getParameters());
         }
     }
 
