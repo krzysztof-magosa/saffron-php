@@ -178,6 +178,10 @@ class Generator extends \KM\Saffron\Generator
             $this->code->append('$https = $request->getHttps();');
         }
 
+        if ($this->collection->hasMethod()) {
+            $this->code->append('$method = $request->getMethod();');
+        }
+
         foreach ($this->collection->groupByDomain() as $routes) {
             if ($routes->first()->hasDomain()) {
                 $this->code->append(
