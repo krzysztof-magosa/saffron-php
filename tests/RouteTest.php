@@ -29,4 +29,11 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $route->setRequirements(['id' => '\d+']);
         $this->assertEquals(['id' => '\d+'], $route->getRequirements());
     }
+
+    public function testDomainPlaceholders()
+    {
+        $route = new Route('name1');
+        $route->setDomain('{prefix}.example.{tld}');
+        $this->assertEquals(['prefix', 'tld'], $route->getDomainPlaceholders());
+    }
 }
