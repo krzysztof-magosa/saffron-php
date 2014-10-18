@@ -22,7 +22,7 @@ class Route
     protected $domain;
     protected $https;
     protected $method = [];
-    protected $requires = [];
+    protected $requirements = [];
     protected $defaults = [];
     protected $target = [];
 
@@ -101,20 +101,20 @@ class Route
         return null !== $this->https;
     }
 
-    public function setRequires(array $requires)
+    public function setRequirements(array $requirements)
     {
-        $this->requires = $requires;
+        $this->requirements = $requirements;
         return $this;
     }
 
     public function getRequire($name)
     {
-        return isset($this->requires[$name]) ? $this->requires[$name] : '.+';
+        return isset($this->requirements[$name]) ? $this->requirements[$name] : '.+';
     }
 
-    public function getRequires()
+    public function getRequirements()
     {
-        return $this->requires;
+        return $this->requirements;
     }
 
     public function setDefaults(array $defaults)

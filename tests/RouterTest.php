@@ -121,7 +121,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
                     ->setMethod('GET')
                     ->setTarget('TestController', 'createAction')
                     ->setDefaults(['route' => 'test5a'])
-                    ->setRequires(['id' => '\d+']);
+                    ->setRequirements(['id' => '\d+']);
 
                 $collection->route('test5b')
                     ->setUri('/info/{slug}')
@@ -129,7 +129,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
                     ->setMethod('GET')
                     ->setTarget('TestController', 'createAction')
                     ->setDefaults(['route' => 'test5b'])
-                    ->setRequires(['slug' => '\w+']);
+                    ->setRequirements(['slug' => '\w+']);
 
                 $collection->route('test6')
                     ->setUri('/methods/get')
