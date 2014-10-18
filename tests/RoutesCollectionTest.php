@@ -31,22 +31,51 @@ class RoutesCollectionTest extends PHPUnit_Framework_TestCase
             ->setUri('/home');
     }
 
-    /**
-     * @expectedException \KM\Saffron\Exception\EmptyCollection
-     * @expectedExceptionMessage You cannot fetch first element of empty collection.
-     */
-    public function testFirstOnEmptyCollection()
+    public function testGroupByDomain()
     {
         $collection = new RoutesCollection();
-        $collection->first();
+        $routes[] = $collection->route('test1')->setDomain('www.example1.com');
+        $routes[] = $collection->route('test2')->setDomain('www.example1.com');
+        $routes[] = $collection->route('test3')->setDomain('www.example2.com');
+        $routes[] = $collection->route('test4')->setDomain('www.example2.com');
+
+        $grouped = $collection->groupByDomain();
+        $keys = $grouped->getKeys();
+
+        $this->assertEquals($routes[0], $grouped[$keys[0]][0]);
+        $this->assertEquals($routes[1], $grouped[$keys[0]][1]);
+        $this->assertEquals($routes[2], $grouped[$keys[1]][0]);
+        $this->assertEquals($routes[3], $grouped[$keys[1]][1]);
     }
 
-    public function testFirstOnFullCollection()
+    public function testHasDomain()
     {
         $collection = new RoutesCollection();
-        $route1 = $collection->route('home');
-        $route2 = $collection->route('team');
 
-        $this->assertEquals($route1, $collection->first());
+        $this->assertEquals(false, $collection->hasDomain());
+        $collection->route('test1')->setDomain('www.example1.com');
+        $this->assertEquals(true, $collection->hasDomain());
+    }
+
+    public function testHasMethod()
+    {
+        $collection = new RoutesCollection();
+
+        $this->assertEquals(false, $collection->hasMethod());
+        $collection->route('test1')->setMethod('GET');
+        $this->assertEquals(true, $collection->hasMethod());
+    }
+
+    public function testHasHttps()
+    {
+        $collection = new RoutesCollection();
+        $route = $collection->route('test1');
+        $this->assertEquals(false, $collection->hasHttps());
+
+        $route->setHttps(true);
+        $this->assertEquals(true, $collection->hasHttps());
+
+        $route->setHttps(false);
+        $this->assertEquals(true, $collection->hasHttps());
     }
 }
