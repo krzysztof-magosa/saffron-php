@@ -38,7 +38,7 @@ $router = new \Symfony\Component\Routing\Router(
     $loader,
     $closure,
     array(
-        'cache_dir' => sys_get_temp_dir() . '/router_cache'
+        'cache_dir' => __DIR__ . '/../cache'
     ),
     $requestContext
 );

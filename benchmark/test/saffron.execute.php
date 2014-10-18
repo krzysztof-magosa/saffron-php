@@ -29,6 +29,8 @@ $factory = new RouterFactory(
 );
 
 $router = $factory
+    ->setCacheDir(__DIR__ . '/../cache')
+    ->setCacheSuffix('saffron_execute')
     ->build();
 
 $route = $router->match(\KM\Saffron\Request::createFromGlobals());

@@ -28,6 +28,8 @@ $factory = new RouterFactory(
 );
 
 $router = $factory
+    ->setCacheDir(__DIR__ . '/../cache')
+    ->setCacheSuffix('saffron')
     ->build();
 
 $router->match(\KM\Saffron\Request::createFromGlobals());
