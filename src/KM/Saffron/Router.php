@@ -52,10 +52,10 @@ class Router
 
     /**
      * Match request against routes.
-     * Returns MatchedRoute if request matches, null otherwise.
+     * Returns RoutingResult if request matches, null otherwise.
      * 
      * @param Request $request
-     * @return MatchedRoute|null
+     * @return RoutingResult
      */
     public function match(Request $request)
     {
