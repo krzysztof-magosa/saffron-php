@@ -11,10 +11,5 @@
         "psr-4": {
             "KM\\": "src/"
         }
-    },
-    "scripts": {
-        "post-autoload-dump": [
-            "php vendor/krzysztof-magosa/saffron/bin/compile -s ./test/saffron/router.php -d ./test/saffron/router.compiled.php"
-        ]
     }
 }
