@@ -16,10 +16,15 @@
 namespace KM\Saffron;
 
 use KM\Saffron\Exception\RouteAlreadyRegistered;
+use KM\Saffron\Exception\EmptyCollection;
+use KM\Saffron\Collection;
 
-class RoutesCollection extends \ArrayIterator
+class RoutesCollection extends Collection
 {
     /**
+     * Create instance of Route and returns it.
+     * Also looks for duplicated names.
+     * 
      * @param string $name Name of route
      * @return RoutesCollection
      */
@@ -34,63 +39,23 @@ class RoutesCollection extends \ArrayIterator
         return $route;
     }
 
-    public function first()
-    {
-        return $this[$this->getFirstKey()];
-    }
-
-    protected function getFirstKey()
-    {
-        foreach ($this as $key => $value) {
-            return $key;
-        }
-
-        return null;
-    }
-
-    protected function groupBy(\Closure $func)
-    {
-        $index = 0;
-        $lastValue = $func($this->first());
-
-        $result = new self();
-
-        foreach ($this as $route) {
-            if ($lastValue != ($value = $func($route))) {
-                $lastValue = $value;
-                $index++;
-            }
-
-            if (!isset($result[$index])) {
-                $result[$index] = new self();
-            }
-
-            $result[$index]->append($route);
-        }
-
-        return $result;        
-    }
-
+    /**
+     * Groups routes by domain
+     * @mixed RoutesCollection
+     */
     public function groupByDomain()
     {
         return $this->groupBy(
             function ($route) {
-                return $route->getDomain();
+                return sha1($route->getDomain());
             }
         );
     }
 
-    protected function has(\Closure $func)
-    {
-        foreach ($this as $route) {
-            if ($func($route)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
+    /**
+     * Checks whether routes in collection has domain condition.
+     * @return bool
+     */
     public function hasDomain()
     {
         return $this->has(
@@ -100,6 +65,10 @@ class RoutesCollection extends \ArrayIterator
         );
     }
 
+    /**
+     * Checks whether routes in collection has method condition.
+     * @return bool
+     */
     public function hasMethod()
     {
         return $this->has(
@@ -109,6 +78,10 @@ class RoutesCollection extends \ArrayIterator
         );
     }
 
+    /**
+     * Checks whether routes in collection has https condition.
+     * @return bool
+     */
     public function hasHttps()
     {
         return $this->has(
