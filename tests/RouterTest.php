@@ -68,6 +68,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
             ['/not-found', 'www.test7.com', 'GET', false, true, false, [], []],
 
             ['/test100', 'www.test100.com', 'GET', false, false, false, [], []],
+
+            ['/test111/555', 'www.test111.com', 'GET', false, false, false, [], ['id1' => 555, 'id2' => 222]],
         ];
     }
 
@@ -142,6 +144,13 @@ class RouterTest extends PHPUnit_Framework_TestCase
                     ->setMethod('GET')
                     ->setTarget('TestController', 'createAction')
                     ->setDefaults(['route' => 'test99']);
+
+                $collection->route('test111')
+                    ->setUri('/test111/{id1}/{id2}')
+                    ->setMethod('GET')
+                    ->setTarget('TestController', 'createAction')
+                    ->setRequirements(['id1' => '\d+', 'id2' => '\d+'])
+                    ->setDefaults(['id2' => 222]);
 
                 $collection->route('test100')
                     ->setUri('/test100')
