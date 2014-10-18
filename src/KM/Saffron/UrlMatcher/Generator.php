@@ -78,10 +78,6 @@ class Generator extends \KM\Saffron\Generator
     {
         $arrays = [];
 
-        if ($route->hasDefaults()) {
-            $arrays[] = $this->formatArray($route->getDefaults());
-        }
-
         if ($route->hasDomain()) {
             $arrays[] = '$domainMatch';
         }
@@ -124,23 +120,24 @@ class Generator extends \KM\Saffron\Generator
             ->append($this->formatArray($route->getTarget()).',');
 
         $arrays = $this->getArraysOfParameters($route);
-        if (count($arrays) >= 2) {
+        if ($arrays) {
             $this->code->append(
                 sprintf(
-                    'array_replace(%s)',
-                    implode(', ', $this->getArraysOfParameters($route))
-                )
-            );    
-        }
-        else {
-            $this->code->append(
-                sprintf(
-                    '%s',
+                    '$this->filterParameters(array_replace(%s, %s))',
+                    $this->formatArray($route->getDefaults()),
                     implode(', ', $this->getArraysOfParameters($route))
                 )
             );
         }
-        
+        else {
+            $this->code->append(
+                sprintf(
+                    '$this->filterParameters(%s)',
+                    $this->formatArray($route->getDefaults())
+                )
+            );   
+        }
+
         $this->code->append(');');
 
         if ($route->hasMethod()) {
