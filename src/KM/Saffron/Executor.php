@@ -119,7 +119,7 @@ class Executor
      */
     protected function runHook($hook)
     {
-        if (is_callable($hook)) {
+        if ($hook && is_callable($hook)) {
             call_user_func(
                 $hook,
                 $this->controller,
