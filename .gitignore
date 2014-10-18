@@ -1,3 +1,5 @@
 vendor/
 *.sublime-*
 composer.lock
+benchmark/cache/*.php
+
