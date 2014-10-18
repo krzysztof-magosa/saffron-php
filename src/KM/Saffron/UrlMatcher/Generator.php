@@ -171,11 +171,11 @@ class Generator extends \KM\Saffron\Generator
             ->append('$allowedMethods = [];');
 
         if ($this->collection->hasMethod()) {
-            $this->code->append('$domain = $request->getDomain()');
+            $this->code->append('$domain = $request->getDomain();');
         }
 
         if ($this->collection->hasHttps()) {
-            $this->code->append('$https = $request->getHttps()');
+            $this->code->append('$https = $request->getHttps();');
         }
 
         foreach ($this->collection->groupByDomain() as $routes) {
