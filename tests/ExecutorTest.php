@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-use \KM\Saffron\MatchedRoute;
+use \KM\Saffron\RoutingResult;
 use \KM\Saffron\Executor;
 
 class Controller
@@ -30,7 +30,7 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
 {
     public function testByName()
     {
-        $executor = new \KM\Saffron\Executor();
+        $executor = new Executor();
         $vars = $executor
             ->setController('Controller')
             ->setMethod('dispatch')
@@ -50,7 +50,7 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
 
     public function testByObject()
     {
-        $executor = new \KM\Saffron\Executor();
+        $executor = new Executor();
         $vars = $executor
             ->setController(new Controller())
             ->setMethod('dispatch')
@@ -68,18 +68,20 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(3, $vars[2]);
     }
 
-    public function testMatchedRoute()
+    public function testRoutingResult()
     {
-        $route = new MatchedRoute(
-            ['Controller', 'dispatch'],
-            [
-                'a' => '11',
-                'b' => '12',
-                'c' => '13',
-            ]
-        );
+        $result = new RoutingResult();
+        $result
+            ->setTarget(['Controller', 'dispatch'])
+            ->setParameters(
+                [
+                    'a' => '11',
+                    'b' => '12',
+                    'c' => '13',
+                ]
+            );
 
-        $executor = new Executor($route);
+        $executor = new Executor($result);
         $vars = $executor->fire();
 
         $this->assertEquals('11', $vars[0]);
@@ -91,17 +93,19 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
     {
         global $steps;
 
-        $route = new MatchedRoute(
-            ['Controller', 'dispatch'],
-            [
-                'a' => '11',
-                'b' => '12',
-                'c' => '13',
-            ]
-        );
+        $result = new RoutingResult();
+        $result
+            ->setTarget(['Controller', 'dispatch'])
+            ->setParameters(
+                [
+                    'a' => '11',
+                    'b' => '12',
+                    'c' => '13',
+                ]
+            );
 
         $steps = [];
-        $executor = new Executor($route);
+        $executor = new Executor($result);
         $executor->setPreDispatch(
             function () {
                 global $steps;
@@ -117,17 +121,19 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
     {
         global $steps;
 
-        $route = new MatchedRoute(
-            ['Controller', 'dispatch'],
-            [
-                'a' => '11',
-                'b' => '12',
-                'c' => '13',
-            ]
-        );
+        $result = new RoutingResult();
+        $result
+            ->setTarget(['Controller', 'dispatch'])
+            ->setParameters(
+                [
+                    'a' => '11',
+                    'b' => '12',
+                    'c' => '13',
+                ]
+            );
 
         $steps = [];
-        $executor = new Executor($route);
+        $executor = new Executor($result);
         $executor->setPostDispatch(
             function () {
                 global $steps;
@@ -143,17 +149,19 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
     {
         global $steps;
 
-        $route = new MatchedRoute(
-            ['Controller', 'dispatch'],
-            [
-                'a' => '11',
-                'b' => '12',
-                'c' => '13',
-            ]
-        );
+        $result = new RoutingResult();
+        $result
+            ->setTarget(['Controller', 'dispatch'])
+            ->setParameters(
+                [
+                    'a' => '11',
+                    'b' => '12',
+                    'c' => '13',
+                ]
+            );
 
         $steps = [];
-        $executor = new Executor($route);
+        $executor = new Executor($result);
         $executor->setPreDispatch(
             function () {
                 global $steps;
@@ -173,16 +181,19 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
 
     public function testGetController()
     {
-        $route = new MatchedRoute(
-            ['Controller', 'dispatch'],
-            [
-                'a' => '11',
-                'b' => '12',
-                'c' => '13',
-            ]
-        );
+        $result = new RoutingResult();
+        $result
+            ->setTarget(['Controller', 'dispatch'])
+            ->setParameters(
+                [
+                    'a' => '11',
+                    'b' => '12',
+                    'c' => '13',
+                ]
+            );
 
-        $executor = new Executor($route);
+        $steps = [];
+        $executor = new Executor($result);
         $controller = $executor->getController();
 
         $this->assertInstanceOf('Controller', $controller);
