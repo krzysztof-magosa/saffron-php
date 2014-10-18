@@ -59,8 +59,7 @@ class RoutingResultTest extends PHPUnit_Framework_TestCase
      */
     public function testSuccessful($value)
     {
-        $result = new RoutingResult();
-        $result->setSuccessful($value);
+        $result = new RoutingResult($value, false, false, [], [], []);
         $this->assertEquals($value, $result->isSuccessful());
     }
 
@@ -69,8 +68,7 @@ class RoutingResultTest extends PHPUnit_Framework_TestCase
      */
     public function testMethodNotAllowed($value)
     {
-        $result = new RoutingResult();
-        $result->setMethodNotAllowed($value);
+        $result = new RoutingResult(false, $value, false, [], [], []);
         $this->assertEquals($value, $result->isMethodNotAllowed());
     }
 
@@ -79,8 +77,7 @@ class RoutingResultTest extends PHPUnit_Framework_TestCase
      */
     public function testResourceNotFound($value)
     {
-        $result = new RoutingResult();
-        $result->setResourceNotFound($value);
+        $result = new RoutingResult(false, false, $value, [], [], []);
         $this->assertEquals($value, $result->isResourceNotFound());
     }
 
@@ -89,8 +86,7 @@ class RoutingResultTest extends PHPUnit_Framework_TestCase
      */
     public function testAllowedMethods(array $value)
     {
-        $result = new RoutingResult();
-        $result->setAllowedMethods($value);
+        $result = new RoutingResult(false, false, false, $value, [], []);
         $this->assertEquals($value, $result->getAllowedMethods());
     }
 
@@ -99,8 +95,7 @@ class RoutingResultTest extends PHPUnit_Framework_TestCase
      */
     public function testTarget(array $value)
     {
-        $result = new RoutingResult();
-        $result->setTarget($value);
+        $result = new RoutingResult(false, false, false, [], $value, []);
         $this->assertEquals($value, $result->getTarget());
     }
 
@@ -109,8 +104,7 @@ class RoutingResultTest extends PHPUnit_Framework_TestCase
      */
     public function testParameters(array $value)
     {
-        $result = new RoutingResult();
-        $result->setParameters($value);
+        $result = new RoutingResult(false, false, false, [], [], $value);
         $this->assertEquals($value, $result->getParameters());
     }
 }

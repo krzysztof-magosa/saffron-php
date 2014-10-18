@@ -70,17 +70,19 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
 
     public function testRoutingResult()
     {
-        $result = new RoutingResult();
-        $result
-            ->setTarget(['Controller', 'dispatch'])
-            ->setParameters(
-                [
-                    'a' => '11',
-                    'b' => '12',
-                    'c' => '13',
-                ]
-            );
-
+        $result = new RoutingResult(
+            true,
+            false,
+            false,
+            [],
+            ['Controller', 'dispatch'],
+            [
+                'a' => '11',
+                'b' => '12',
+                'c' => '13',
+            ]
+        );
+        
         $executor = new Executor($result);
         $vars = $executor->fire();
 
@@ -93,16 +95,18 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
     {
         global $steps;
 
-        $result = new RoutingResult();
-        $result
-            ->setTarget(['Controller', 'dispatch'])
-            ->setParameters(
-                [
-                    'a' => '11',
-                    'b' => '12',
-                    'c' => '13',
-                ]
-            );
+        $result = new RoutingResult(
+            true,
+            false,
+            false,
+            [],
+            ['Controller', 'dispatch'],
+            [
+                'a' => '11',
+                'b' => '12',
+                'c' => '13',
+            ]
+        );
 
         $steps = [];
         $executor = new Executor($result);
@@ -121,16 +125,18 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
     {
         global $steps;
 
-        $result = new RoutingResult();
-        $result
-            ->setTarget(['Controller', 'dispatch'])
-            ->setParameters(
-                [
-                    'a' => '11',
-                    'b' => '12',
-                    'c' => '13',
-                ]
-            );
+        $result = new RoutingResult(
+            true,
+            false,
+            false,
+            [],
+            ['Controller', 'dispatch'],
+            [
+                'a' => '11',
+                'b' => '12',
+                'c' => '13',
+            ]
+        );
 
         $steps = [];
         $executor = new Executor($result);
@@ -149,16 +155,18 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
     {
         global $steps;
 
-        $result = new RoutingResult();
-        $result
-            ->setTarget(['Controller', 'dispatch'])
-            ->setParameters(
-                [
-                    'a' => '11',
-                    'b' => '12',
-                    'c' => '13',
-                ]
-            );
+        $result = new RoutingResult(
+            true,
+            false,
+            false,
+            [],
+            ['Controller', 'dispatch'],
+            [
+                'a' => '11',
+                'b' => '12',
+                'c' => '13',
+            ]
+        );
 
         $steps = [];
         $executor = new Executor($result);
@@ -181,16 +189,18 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
 
     public function testGetController()
     {
-        $result = new RoutingResult();
-        $result
-            ->setTarget(['Controller', 'dispatch'])
-            ->setParameters(
-                [
-                    'a' => '11',
-                    'b' => '12',
-                    'c' => '13',
-                ]
-            );
+        $result = new RoutingResult(
+            true,
+            false,
+            false,
+            [],
+            ['Controller', 'dispatch'],
+            [
+                'a' => '11',
+                'b' => '12',
+                'c' => '13',
+            ]
+        );
 
         $steps = [];
         $executor = new Executor($result);
