@@ -128,6 +128,11 @@ class Route
         return isset($this->defaults[$name]);
     }
 
+    public function hasDefaults()
+    {
+        return !empty($this->defaults);
+    }
+
     public function setTarget($controller, $method = 'indexAction')
     {
         $this->target = [$controller, $method];
