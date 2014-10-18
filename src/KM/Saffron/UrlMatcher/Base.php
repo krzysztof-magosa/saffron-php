@@ -17,4 +17,15 @@ namespace KM\Saffron\UrlMatcher;
 
 abstract class Base
 {
+    protected function filterParameters(array $parameters)
+    {
+        $result = [];
+        foreach ($parameters as $key => $value) {
+            if (!is_int($key)) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
 }

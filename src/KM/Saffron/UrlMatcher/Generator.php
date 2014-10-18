@@ -21,12 +21,20 @@ use KM\Saffron\Code;
 
 class Generator extends \KM\Saffron\Generator
 {
+    /**
+     * @var RoutesCollection
+     */
     protected $collection;
+
+    /**
+     * @var Code
+     */
     protected $code;
 
     public function __construct(RoutesCollection $collection)
     {
         $this->collection = $collection;
+        $this->code = new Code();
     }
 
     protected function conditionPrefix($route, &$conditions)
@@ -45,7 +53,7 @@ class Generator extends \KM\Saffron\Generator
         }
     }
 
-    protected function conditionUriRegex($route, &$conditions)
+    protected function conditionUriRegex(Route $route, array &$conditions)
     {
         if ($route->needsUriRegex()) {
             $conditions[] = sprintf(
@@ -55,17 +63,7 @@ class Generator extends \KM\Saffron\Generator
         }
     }
 
-    protected function conditionMethod($route, &$conditions)
-    {
-        if ($route->hasMethod()) {
-            $conditions[] = sprintf(
-                'in_array($method, %s)',
-                $this->formatArray($route->getMethod())
-            );
-        }
-    }
-
-    protected function conditionHttps($route, &$conditions)
+    protected function conditionHttps(Route $route, array &$conditions)
     {
         $https = $route->getHttps();
         if (null !== $https) {
@@ -76,7 +74,7 @@ class Generator extends \KM\Saffron\Generator
         }
     }
 
-    protected function getArrays($route)
+    protected function getArraysOfParameters(Route $route)
     {
         $arrays = [];
 
@@ -90,12 +88,11 @@ class Generator extends \KM\Saffron\Generator
         return $arrays;
     }
 
-    protected function generateRoute($route)
+    protected function generateRoute(Route $route)
     {
         $conditions = [];
         $this->conditionPrefix($route, $conditions);
         $this->conditionUriRegex($route, $conditions);
-        $this->conditionMethod($route, $conditions);
         $this->conditionHttps($route, $conditions);
 
         $this->code->append(
@@ -105,34 +102,71 @@ class Generator extends \KM\Saffron\Generator
             )
         );
 
-        $this->code->append('return new MatchedRoute(');
-        $this->code->append($this->formatArray($route->getTarget()).',');
-        $arrays = $this->getArrays($route);
+        if ($route->hasMethod()) {
+            $this->code->append(
+                sprintf(
+                    'if (in_array($method, %s)) {',
+                    $this->formatArray($route->getMethod())
+                )
+            );
+        }
+
+        $this->code
+            ->append('$result = new RoutingResult();')
+            ->append('$result->setSuccessful(true);')
+            ->append(
+                sprintf(
+                    '$result->setTarget(%s);',
+                    $this->formatArray($route->getTarget())
+                )
+            );
+
+        $arrays = $this->getArraysOfParameters($route);
         if ($arrays) {
             $this->code->append(
                 sprintf(
-                    'array_replace(%s, %s)',
+                    '$result->setParameters($this->filterParameters(array_replace(%s, %s)));',
                     $this->formatArray($route->getDefaults()),
                     implode(', ', $arrays)
                 )
             );
         }
         else {
-            $this->code->append($this->formatArray($route->getDefaults()));
+            $this->code->append(
+                sprintf(
+                    '$result->setParameters($this->filterParameters(%s));',
+                    $this->formatArray($route->getDefaults())
+                )
+            );
         }
-        $this->code->append(');');
+
+        $this->code->append('return $result;');
+
+        if ($route->hasMethod()) {
+            $this->code->append('}');
+            $this->code->append('else {');
+            $this->code->append(
+                sprintf(
+                    '$allowedMethods = array_merge($allowedMethods, %s);',
+                    $this->formatArray($route->getMethod())
+                )
+            );
+            $this->code->append('}');
+        }
 
         $this->code->append('}');
     }
 
-    protected function generateMatch()
+    protected function generateMatchMethod()
     {
-        $this->code->append('public function match(Request $request) {');
-        $this->code->append('$uri    = $request->getUri();');
-        $this->code->append('$domain = $request->getDomain();');
-        $this->code->append('$method = $request->getMethod();');
-        $this->code->append('$https  = $request->getHttps();');
-        $this->code->append('');
+        $this->code
+            ->append('public function match(Request $request) {')
+            ->append('$uri    = $request->getUri();')
+            ->append('$domain = $request->getDomain();')
+            ->append('$method = $request->getMethod();')
+            ->append('$https  = $request->getHttps();')
+            ->append('$allowedMethods = [];')
+            ->append('');
 
         foreach ($this->collection->groupByDomain() as $routes) {
             if ($routes->first()->hasDomain()) {
@@ -153,6 +187,13 @@ class Generator extends \KM\Saffron\Generator
             }
         }
 
+        $this->code
+            ->append('$result = new RoutingResult();')
+            ->append('$result->setResourceNotFound(empty($allowedMethods));')
+            ->append('$result->setMethodNotAllowed(!empty($allowedMethods));')
+            ->append('$result->setAllowedMethods($allowedMethods);')
+            ->append('return $result;');
+
         $this->code->append('}');
     }
 
@@ -163,7 +204,7 @@ class Generator extends \KM\Saffron\Generator
             <?php
             use KM\Saffron\UrlMatcher;
             use KM\Saffron\Request;
-            use KM\Saffron\MatchedRoute;
+            use KM\Saffron\RoutingResult;
             use KM\Saffron\UrlMatcher\Base;
 
             class $className extends Base {
@@ -178,10 +219,8 @@ EOB
 
     public function generate($className)
     {
-        $this->code = new Code();
-
         $this->generateHeader($className);
-        $this->generateMatch();
+        $this->generateMatchMethod();
         $this->generateFooter();
 
         return (string)$this->code;
