@@ -191,7 +191,7 @@ class Generator extends \KM\Saffron\Generator
             ->append('$result = new RoutingResult();')
             ->append('$result->setResourceNotFound(empty($allowedMethods));')
             ->append('$result->setMethodNotAllowed(!empty($allowedMethods));')
-            ->append('$result->setAllowedMethods($allowedMethods);')
+            ->append('$result->setAllowedMethods(array_unique($allowedMethods));')
             ->append('return $result;');
 
         $this->code->append('}');
