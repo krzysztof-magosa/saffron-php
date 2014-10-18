@@ -46,6 +46,20 @@ abstract class Collection extends \ArrayIterator
     }
 
     /**
+     * Returns keys of elements in Collection
+     */
+    public function getKeys()
+    {
+        $keys = [];
+
+        foreach ($this as $key => $value) {
+            $keys[] = $key;
+        }
+
+        return $keys;
+    }
+
+    /**
      * Creates nested Collection for each group.
      * $func closure needs to return unique value for each group.
      * @param \Closure $func
