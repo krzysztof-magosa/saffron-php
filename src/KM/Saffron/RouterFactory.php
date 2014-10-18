@@ -45,7 +45,7 @@ class RouterFactory
 
     public function setCacheSuffix($suffix)
     {
-        $this->cacheSuffix = md5($suffix);
+        $this->cacheSuffix = $suffix;
         return $this;
     }
 
@@ -58,11 +58,6 @@ class RouterFactory
     public function getCacheSuffix()
     {
         static $iteration = 0;
-
-        if (!$this->cacheSuffix) {
-            // Every project has own copy when using composer.
-            $this->cacheSuffix = md5(__FILE__);
-        }
 
         if ($this->debug) {
             return $this->cacheSuffix.md5(microtime(true).(++$iteration));
