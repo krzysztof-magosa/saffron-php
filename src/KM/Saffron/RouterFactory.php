@@ -30,7 +30,7 @@ class RouterFactory
 
     public function setCacheDir($dir)
     {
-        $this->cacheDir = rtrim(realpath($dir), '/');
+        $this->cacheDir = $dir;
         return $this;
     }
 
