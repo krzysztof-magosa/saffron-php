@@ -69,7 +69,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
             ['/test100', 'www.test100.com', 'GET', false, false, false, [], []],
 
-            ['/test111/555', 'www.test111.com', 'GET', false, false, false, [], ['id1' => 555, 'id2' => 222]],
+            ['/test111/555', 'www.test111.com', 'GET', false, false, false, [], ['id1' => 555, 'id2' => 222, 'prefix' => 'www']],
         ];
     }
 
@@ -149,6 +149,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
                     ->setUri('/test111/{id1}/{id2}')
                     ->setMethod('GET')
                     ->setTarget('TestController', 'createAction')
+                    ->setDomain('{prefix}.test111.com')
                     ->setRequirements(['id1' => '\d+', 'id2' => '\d+'])
                     ->setDefaults(['id2' => 222]);
 
