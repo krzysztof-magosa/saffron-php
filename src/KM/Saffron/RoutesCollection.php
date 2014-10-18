@@ -79,4 +79,42 @@ class RoutesCollection extends \ArrayIterator
             }
         );
     }
+
+    protected function has(\Closure $func)
+    {
+        foreach ($this as $route) {
+            if ($func($route)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function hasDomain()
+    {
+        return $this->has(
+            function ($route) {
+                return $route->hasDomain();
+            }
+        );
+    }
+
+    public function hasMethod()
+    {
+        return $this->has(
+            function ($route) {
+                return $route->hasMethod();
+            }
+        );
+    }
+
+    public function hasHttps()
+    {
+        return $this->has(
+            function ($route) {
+                return $route->hasHttps();
+            }
+        );
+    }
 }
