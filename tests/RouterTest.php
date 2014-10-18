@@ -162,32 +162,6 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \KM\Saffron\Exception\RouteAlreadyRegistered
-     * @expectedExceptionMessage Route with name home is already registered
-     */
-    public function testDuplicateOfNamedRoute()
-    {
-        $factory = new RouterFactory(
-            function ($collection) {
-                $collection->route('home')
-                    ->setUri('/');
-
-                $collection->route('home')
-                    ->setUri('/home');
-            }
-        );
-
-        $router = $factory
-            ->setDebug(true)
-            ->build();
-
-        $request = new Request();
-        $request->setUri('/test');
-
-        $router->match($request);
-    }
-
-    /**
      * @dataProvider providerAssemble
      */
     public function testAssemble($uri, $defaults, $parameters, $result)
