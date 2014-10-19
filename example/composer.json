@@ -1,6 +1,7 @@
 {
+    "minimum-stability": "dev",
     "require": {
-        "krzysztof-magosa/saffron": "4.*"
+        "krzysztof-magosa/saffron": "5.*"
     },
     "autoload": {
         "psr-4": {

@@ -1,11 +1,12 @@
 {
+    "minimum-stability": "dev",
     "require": {
         "aura/router": "2.1.0",
         "klein/klein": "2.0.2",
         "corneltek/pux": "1.5.2",
         "symfony/routing": "2.5.5",
         "symfony/config": "2.5.5",
-        "krzysztof-magosa/saffron": "4.*"
+        "krzysztof-magosa/saffron": "5.*"
     },
     "autoload": {
         "psr-4": {
