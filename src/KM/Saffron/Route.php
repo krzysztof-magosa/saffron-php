@@ -152,26 +152,6 @@ class Route
         return $this->target;
     }
 
-    public function getPrefix()
-    {
-        // @TODO make it not ugly :)
-        $pos = strpos($this->uri, '{');
-
-        if (false !== $pos) {
-            $length = max($pos - 1, 1);
-        }
-        else {
-            $length = strlen($this->uri);
-        }
-
-        return substr($this->uri, 0, $length);
-    }
-
-    public function needsUriRegex()
-    {
-        return $this->getPrefix() != $this->getUri();
-    }
-
     protected function getCompiler()
     {
         static $compiler;
