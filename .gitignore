@@ -2,4 +2,4 @@ vendor/
 *.sublime-*
 composer.lock
 benchmark/cache/*.php
-
+example/cache/*.php
