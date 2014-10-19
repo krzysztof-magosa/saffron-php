@@ -1,5 +1,6 @@
 <?php
 use \KM\Saffron\RouterFactory;
+use \KM\Saffron\Request;
 
 $factory = new RouterFactory(
     function ($collection) {
@@ -32,4 +33,7 @@ $router = $factory
     ->setClassSuffix('Saffron')
     ->build();
 
-$router->match(\KM\Saffron\Request::createFromGlobals());
+$request = new Request();
+$request->setUri($_SERVER['REQUEST_URI']);
+
+$router->match($request);

@@ -1,5 +1,6 @@
 <?php
 use \KM\Saffron\RouterFactory;
+use \KM\Saffron\Request;
 use \KM\Saffron\Executor;
 
 $factory = new RouterFactory(
@@ -33,6 +34,9 @@ $router = $factory
     ->setClassSuffix('SaffronExecute')
     ->build();
 
-$route = $router->match(\KM\Saffron\Request::createFromGlobals());
+$request = new Request();
+$request->setUri($_SERVER['REQUEST_URI']);
+
+$route = $router->match($request);
 $executor = new Executor($route);
 $executor->fire();
