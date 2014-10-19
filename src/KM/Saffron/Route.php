@@ -149,18 +149,6 @@ class Route
         return $this->target;
     }
 
-    public function getUriPlaceholders()
-    {
-        preg_match_all('@{(\w+)}@Us', $this->uri, $match);
-        return $match[1];
-    }
-
-    public function getDomainPlaceholders()
-    {
-        preg_match_all('@{(\w+)}@Us', $this->domain, $match);
-        return $match[1];   
-    }
-
     public function getPrefix()
     {
         // @TODO make it not ugly :)
