@@ -7,7 +7,7 @@ $factory = new RouterFactory(
             $collection->route('test'.$i)
                 ->setUri('/test'.$i.'/{slug}/{id}')
                 ->setTarget('\TestController')
-                ->setRequires(
+                ->setRequirements(
                     [
                         'slug' => '\w+',
                         'id' => '\d+',
@@ -18,7 +18,7 @@ $factory = new RouterFactory(
         $collection->route('test')
             ->setUri('/test/{slug}/{id}')
             ->setTarget('\TestController')
-            ->setRequires(
+            ->setRequirements(
                 [
                     'slug' => '\w+',
                     'id' => '\d+',
@@ -29,7 +29,7 @@ $factory = new RouterFactory(
 
 $router = $factory
     ->setCacheDir(__DIR__ . '/../cache')
-    ->setCacheSuffix('saffron')
+    ->setClassSuffix('Saffron')
     ->build();
 
 $router->match(\KM\Saffron\Request::createFromGlobals());
