@@ -15,7 +15,7 @@
  */
 use KM\Saffron\RouterFactory;
 
-class RoutesrFactoryTest extends PHPUnit_Framework_TestCase
+class RoutesFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function testCacheDir()
     {
