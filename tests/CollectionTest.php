@@ -48,4 +48,14 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($route1, $collection->first());
     }
+
+    public function testGetKeys()
+    {
+        $collection = new MyCollection();
+        $collection['key1'] = new \stdClass;
+        $collection['key51'] = new \stdClass;
+        $collection['key91'] = new \stdClass;
+
+        $this->assertEquals(['key1', 'key51', 'key91'], $collection->getKeys());
+    }
 }
