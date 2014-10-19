@@ -15,6 +15,9 @@
  */
 namespace KM\Saffron;
 
+use KM\Saffron\RouteCompiler;
+use KM\Saffron\RouteCompiled;
+
 class Route
 {
     protected $name;
@@ -164,64 +167,27 @@ class Route
         return substr($this->uri, 0, $length);
     }
 
-    public function getUriRegex()
-    {
-        $tokens = preg_split(
-            '#([^}]?\{\w+\})#s',
-            substr($this->uri, 1),
-            -1,
-            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
-        );
-        
-        $regex = preg_quote(substr($this->uri, 0, 1), '#');
-        foreach ($tokens as $token) {
-            if (preg_match('#^(?P<delimiter>.)?\{(?P<placeholder>\w+)\}$#s', $token, $match)) {
-                $regex .= sprintf(
-                    '(%s(?P<%s>%s))%s',
-                    isset($match['delimiter']) ? preg_quote($match['delimiter'], '#') : '',
-                    preg_quote($match['placeholder'], '#'),
-                    $this->getRequire($match['placeholder']),
-                    $this->hasDefault($match['placeholder']) ? '?' : ''
-                );
-            }
-            else {
-                $regex .= preg_quote($token, '#');
-            }
-        }
-
-        return '#^'.$regex.'$#s';
-    }
-
-    public function getDomainRegex()
-    {
-        $tokens = preg_split(
-            '#({\w+\}[^{]?)#s',
-            $this->domain,
-            -1,
-            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
-        );
-
-        $regex = '';
-        foreach ($tokens as $token) {
-            if (preg_match('#^\{(?P<placeholder>\w+)\}(?P<delimiter>.)?$#s', $token, $match)) {
-                $regex .= sprintf(
-                    '((?P<%s>%s)%s)%s',
-                    preg_quote($match['placeholder'], '#'),
-                    $this->getRequire($match['placeholder']),
-                    isset($match['delimiter']) ? preg_quote($match['delimiter'], '#') : '',
-                    $this->hasDefault($match['placeholder']) ? '?' : ''
-                );
-            }
-            else {
-                $regex .= preg_quote($token, '#');
-            }
-        }
-
-        return '#^'.$regex.'$#s';
-    }    
-
     public function needsUriRegex()
     {
         return $this->getPrefix() != $this->getUri();
+    }
+
+    protected function getCompiler()
+    {
+        static $compiler;
+
+        if (!$compiler) {
+            $compiler = new RouteCompiler();
+        }
+
+        return $compiler;
+    }
+
+    /**
+     * @return RouteCompiled
+     */
+    public function getCompiled()
+    {
+        return $this->getCompiler()->compile($this);
     }
 }

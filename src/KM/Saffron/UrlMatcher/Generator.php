@@ -16,6 +16,7 @@
 namespace KM\Saffron\UrlMatcher;
 
 use KM\Saffron\RoutesCollection;
+use KM\Saffron\RouteCompiler;
 use KM\Saffron\Route;
 use KM\Saffron\Code;
 
@@ -37,39 +38,42 @@ class Generator extends \KM\Saffron\Generator
         $this->code = new Code();
     }
 
-    protected function conditionPrefix($route, &$conditions)
+    protected function conditionPrefix(Route $route, &$conditions)
     {
-        if ($route->needsUriRegex()) {
+        $compiled = $route->getCompiled();
+
+        if ($compiled->hasUriRegex()) {
             $conditions[] = sprintf(
                 '0 === strpos($uri, %s)',
-                var_export($route->getPrefix(), true)
+                var_export($compiled->getPrefix(), true)
             );
         }
         else {
             $conditions[] = sprintf(
                 '$uri == %s',
-                var_export($route->getPrefix(), true)
-            );   
+                var_export($compiled->getPrefix(), true)
+            );
         }
     }
 
     protected function conditionUriRegex(Route $route, array &$conditions)
     {
-        if ($route->needsUriRegex()) {
+        $compiled = $route->getCompiled();
+
+        if ($compiled->hasUriRegex()) {
             $conditions[] = sprintf(
                 'preg_match(%s, $uri, $uriMatch)',
-                var_export($route->getUriRegex(), true)
+                var_export($compiled->getUriRegex(), true)
             );
         }
     }
 
     protected function conditionHttps(Route $route, array &$conditions)
     {
-        $https = $route->getHttps();
-        if (null !== $https) {
+        if ($route->hasHttps()) {
             $conditions[] = sprintf(
                 '$https === %s',
-                var_export($https, true)
+                var_export($route->getHttps(), true)
             );
         }
     }
@@ -77,6 +81,7 @@ class Generator extends \KM\Saffron\Generator
     protected function getArraysOfParameters(Route $route)
     {
         $arrays = [];
+        $compiled = $route->getCompiled();
 
         if ($route->hasDefaults()) {
             $arrays[] = $this->formatArray($route->getDefaults());
@@ -85,7 +90,7 @@ class Generator extends \KM\Saffron\Generator
         if ($route->hasDomain()) {
             $arrays[] = '$domainMatch';
         }
-        if ($route->needsUriRegex()) {
+        if ($compiled->hasUriRegex()) {
             $arrays[] = '$uriMatch';
         }
 
@@ -167,7 +172,7 @@ class Generator extends \KM\Saffron\Generator
     {
         $this->code
             ->append('public function match(Request $request) {')
-            ->append('$uri    = $request->getUri();')
+            ->append('$uri = $request->getUri();')
             ->append('$allowedMethods = [];');
 
         if ($this->collection->hasMethod()) {
@@ -187,7 +192,10 @@ class Generator extends \KM\Saffron\Generator
                 $this->code->append(
                     sprintf(
                         'if (preg_match(%s, $domain, $domainMatch)) {',
-                        var_export($routes->first()->getDomainRegex(), true)
+                        var_export(
+                            $routes->first()->getCompiled()->getDomainRegex(),
+                            true
+                        )
                     )
                 );
             }
