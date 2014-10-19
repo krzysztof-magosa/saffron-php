@@ -37,10 +37,6 @@ class RouteCompiler
 
     protected function getUriRegex(Route $route)
     {
-        if ($this->getPrefix($route) == $route->getUri()) {
-            return null;
-        }
-
         $tokens = preg_split(
             '#([^}]?\{\w+\})#s',
             substr($route->getUri(), 1),
@@ -69,10 +65,6 @@ class RouteCompiler
 
     protected function getDomainRegex(Route $route)
     {
-        if (!$route->hasDomain()) {
-            return null;
-        }
-
         $tokens = preg_split(
             '#({\w+\}[^{]?)#s',
             $route->getDomain(),
@@ -103,8 +95,8 @@ class RouteCompiler
     {
         $compiled = new RouteCompiled(
             $this->getPrefix($route),
-            $this->getUriRegex($route),
-            $this->getDomainRegex($route)
+            $this->getPrefix($route) != $route->getUri() ? $this->getUriRegex($route) : null,
+            $route->hasDomain() ? $this->getDomainRegex($route) : null
         );
 
         return $compiled;
