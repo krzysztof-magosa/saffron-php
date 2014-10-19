@@ -3,7 +3,7 @@ namespace KM;
 
 class Benchmark
 {
-    protected $iterations = 1000;
+    protected $iterations = 50000;
     protected $barWidth = 60;
     protected $timings = [];
 
