@@ -51,8 +51,8 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_SERVER['HTTP_HOST'] = 'example.com';
         $_SERVER['HTTPS'] = 'on';
-  
-        $request = Request::createFromGlobals();   
+
+        $request = Request::createFromGlobals();
         $this->assertEquals('/another/uri', $request->getUri());
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('example.com', $request->getDomain());
@@ -65,7 +65,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_SERVER['HTTP_HOST'] = 'example.com';
         $_SERVER['HTTPS'] = 'off';
-        $request = Request::createFromGlobals();   
+        $request = Request::createFromGlobals();
         $this->assertEquals(false, $request->getHttps());
     }
 
@@ -75,7 +75,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_SERVER['HTTP_HOST'] = 'example.com';
         $_SERVER['HTTPS'] = '';
-        $request = Request::createFromGlobals();   
+        $request = Request::createFromGlobals();
         $this->assertEquals(false, $request->getHttps());
     }
 }

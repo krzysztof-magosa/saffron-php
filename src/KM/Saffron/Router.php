@@ -53,7 +53,7 @@ class Router
     /**
      * Match request against routes.
      * Returns RoutingResult if request matches, null otherwise.
-     * 
+     *
      * @param Request $request
      * @return RoutingResult
      */
@@ -64,7 +64,7 @@ class Router
 
     /**
      * Assembles links based on given name and parameters.
-     * 
+     *
      * @param string $name Name of route
      * @param array $parameters Parameters
      * @return string Built link

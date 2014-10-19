@@ -24,7 +24,7 @@ class RoutesCollection extends Collection
     /**
      * Create instance of Route and returns it.
      * Also looks for duplicated names.
-     * 
+     *
      * @param string $name Name of route
      * @return RoutesCollection
      */

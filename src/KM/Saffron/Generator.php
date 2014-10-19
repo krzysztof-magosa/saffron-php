@@ -20,7 +20,7 @@ abstract class Generator
     /**
      * Formats array into form parsable by php.
      * Why not just var_export? Because output is hard to read and debug.
-     * 
+     *
      * @param array $data Array to be formatted
      * @return string Formatted string
      */

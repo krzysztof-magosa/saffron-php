@@ -82,7 +82,7 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
                 'c' => '13',
             ]
         );
-        
+
         $executor = new Executor($result);
         $vars = $executor->fire();
 

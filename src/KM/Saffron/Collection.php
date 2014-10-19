@@ -72,7 +72,7 @@ abstract class Collection extends \ArrayIterator
         $result = new $class;
         foreach ($this as $item) {
             $key = $func($item);
-            
+
             if (!isset($result[$key])) {
                 $result[$key] = new $class;
             }
@@ -80,7 +80,7 @@ abstract class Collection extends \ArrayIterator
             $result[$key]->append($item);
         }
 
-        return $result;        
+        return $result;
     }
 
     /**

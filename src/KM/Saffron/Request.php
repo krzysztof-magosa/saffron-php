@@ -24,7 +24,7 @@ class Request
 
     /**
      * Returns domain or null when not set
-     * 
+     *
      * @return string|null
      */
     public function getDomain()
@@ -34,7 +34,7 @@ class Request
 
     /**
      * Sets domain
-     * 
+     *
      * @return \KM\Saffron\Request
      */
     public function setDomain($domain)
@@ -45,7 +45,7 @@ class Request
 
     /**
      * Returns uri or null when not set
-     * 
+     *
      * @return string|null
      */
     public function getUri()
@@ -65,7 +65,7 @@ class Request
 
     /**
      * Returns method or null when not set
-     * 
+     *
      * @return string|null
      */
     public function getMethod()
@@ -75,7 +75,7 @@ class Request
 
     /**
      * Sets method
-     * 
+     *
      * @return \KM\Saffron\Request
      */
     public function setMethod($method)
@@ -86,7 +86,7 @@ class Request
 
     /**
      * Returns info whether connection is secured by https
-     * 
+     *
      * @return bool
      */
     public function getHttps()
@@ -96,7 +96,7 @@ class Request
 
     /**
      * Sets info whether connection is secured by https
-     * 
+     *
      * @return \KM\Saffron\Request
      */
     public function setHttps($https)
@@ -107,7 +107,7 @@ class Request
 
     /**
      * Builds request object from super globals
-     * 
+     *
      * @return \KM\Saffron\Request
      */
     static public function createFromGlobals()

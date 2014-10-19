@@ -60,7 +60,7 @@ class Code
             }
             else {
                 $result .= str_repeat(' ', $indent);
-                $result .= $line."\n";   
+                $result .= $line."\n";
             }
         }
 

@@ -38,7 +38,7 @@ class Executor
     /**
      * Sets controller to be fired.
      * It can be object or name of class.
-     * 
+     *
      * @param object|string $controller
      * @return Executor
      */
@@ -56,7 +56,7 @@ class Executor
 
     /**
      * Returns controller object
-     * 
+     *
      * @return object
      */
     public function getController()
@@ -66,7 +66,7 @@ class Executor
 
     /**
      * Sets method to be fired
-     * 
+     *
      * @param string $method
      * @return Executor
      */
@@ -78,7 +78,7 @@ class Executor
 
     /**
      * Sets parameters to be passed to controller
-     * 
+     *
      * @param array $parameters
      * @return Executor
      */
@@ -90,7 +90,7 @@ class Executor
 
     /**
      * Sets callable to be called before firing controller
-     * 
+     *
      * @param callable $func
      * @return Executor
      */
@@ -102,7 +102,7 @@ class Executor
 
     /**
      * Sets callable to be called after firing controller
-     * 
+     *
      * @param callable $func
      * @return Executor
      */
@@ -134,7 +134,7 @@ class Executor
      *  - preDispatch (if set)
      *  - method in controller
      *  - postDispatch (if set)
-     * 
+     *
      * @return mixed Value returned by controller's method
      */
     public function fire()
