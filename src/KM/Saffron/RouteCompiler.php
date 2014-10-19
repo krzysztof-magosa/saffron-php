@@ -20,6 +20,10 @@ use KM\Saffron\RouteCompiled;
 
 class RouteCompiler
 {
+    /**
+     * @param Route $route
+     * @return string
+     */
     protected function getPrefix(Route $route)
     {
         // @TODO make it not ugly :)
@@ -35,6 +39,10 @@ class RouteCompiler
         return substr($route->getUri(), 0, $length);
     }
 
+    /**
+     * @param Route $route
+     * @return string
+     */
     protected function getUriRegex(Route $route)
     {
         $tokens = preg_split(
@@ -63,6 +71,10 @@ class RouteCompiler
         return '#^'.$regex.'$#s';
     }
 
+    /**
+     * @param Route $route
+     * @return string
+     */
     protected function getDomainRegex(Route $route)
     {
         $tokens = preg_split(
@@ -91,6 +103,10 @@ class RouteCompiler
         return '#^'.$regex.'$#s';
     }
 
+    /**
+     * @param Route $route
+     * @return RouteCompiled
+     */
     public function compile(Route $route)
     {
         $compiled = new RouteCompiled(

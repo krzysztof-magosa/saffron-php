@@ -28,12 +28,19 @@ class RouterFactory
         $this->initClosure = $initClosure;
     }
 
+    /**
+     * @param string $dir
+     * @return RouterFactory
+     */
     public function setCacheDir($dir)
     {
         $this->cacheDir = $dir;
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getCacheDir()
     {
         if (!$this->cacheDir) {
@@ -43,18 +50,29 @@ class RouterFactory
         return $this->cacheDir;
     }
 
+    /**
+     * @param string $suffix
+     * @return RouterFactory
+     */
     public function setClassSuffix($suffix)
     {
         $this->classSuffix = $suffix;
         return $this;
     }
 
+    /**
+     * @param bool $debug
+     * @return RouterFactory
+     */
     public function setDebug($debug)
     {
         $this->debug = $debug;
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getClassSuffix()
     {
         static $iteration = 0;
@@ -66,6 +84,9 @@ class RouterFactory
         return $this->classSuffix;
     }
 
+    /**
+     * @return UrlMatcher\Base
+     */
     public function getUrlMatcher()
     {
         $className = 'KM_Saffron_UrlMatcher_'.$this->getClassSuffix();
@@ -86,6 +107,9 @@ class RouterFactory
         return new $className();
     }
 
+    /**
+     * @return UrlBuilder\Base
+     */
     public function getUrlBuilder()
     {
         $className = 'KM_Saffron_UrlBuilder_'.$this->getClassSuffix();
@@ -106,6 +130,9 @@ class RouterFactory
         return new $className();
     }
 
+    /**
+     * @return RoutesCollection
+     */
     protected function getCollection()
     {
         if (null === $this->collection) {
@@ -116,6 +143,9 @@ class RouterFactory
         return $this->collection;
     }
 
+    /**
+     * @return Router
+     */
     public function build()
     {
         return new Router($this);
