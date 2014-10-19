@@ -59,7 +59,7 @@ class RouteCompiler
                     '(%s(?P<%s>%s))%s',
                     isset($match['delimiter']) ? preg_quote($match['delimiter'], '#') : '',
                     preg_quote($match['placeholder'], '#'),
-                    $route->getRequire($match['placeholder']),
+                    $route->getRequirement($match['placeholder']),
                     $route->hasDefault($match['placeholder']) ? '?' : ''
                 );
             }
@@ -90,7 +90,7 @@ class RouteCompiler
                 $regex .= sprintf(
                     '((?P<%s>%s)%s)%s',
                     preg_quote($match['placeholder'], '#'),
-                    $route->getRequire($match['placeholder']),
+                    $route->getRequirement($match['placeholder']),
                     isset($match['delimiter']) ? preg_quote($match['delimiter'], '#') : '',
                     $route->hasDefault($match['placeholder']) ? '?' : ''
                 );

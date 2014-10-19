@@ -152,7 +152,7 @@ class Route
      * @param string $name
      * @return string
      */
-    public function getRequire($name)
+    public function getRequirement($name)
     {
         return isset($this->requirements[$name]) ? $this->requirements[$name] : '.+';
     }
