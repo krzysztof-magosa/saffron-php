@@ -16,8 +16,10 @@ Apache 2.0 licensed.
 
 ## Installation
 You can easily install Saffron by adding below requirement to your composer.json
+Saffron 5 is still in beta, so you need to use minimum-stability option.
 ```json
 {
+    "minimum-stability": "dev",
     "require": {
         "krzysztof-magosa/saffron": "5.*"
     }
