@@ -15,8 +15,12 @@
  */
 namespace KM\Saffron\UrlMatcher;
 
+use KM\Saffron\Request;
+
 abstract class Base
 {
+    abstract public function match(Request $request);
+
     protected function filterParameters(array $parameters)
     {
         $result = [];
