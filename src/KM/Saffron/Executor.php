@@ -144,7 +144,8 @@ class Executor
         $method = new \ReflectionMethod($this->controller, $this->method);
         $arguments = [];
         foreach ($method->getParameters() as $parameter) {
-            $name = $parameter->getName();
+            // https://bugs.php.net/bug.php?id=61384
+            $name = $parameter->name;
             $arguments[] = isset($this->parameters[$name]) ? $this->parameters[$name] : null;
         }
 
