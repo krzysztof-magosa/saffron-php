@@ -15,10 +15,23 @@
  */
 namespace Site\Controller;
 
-class ProductController
+use KM\Saffron\RoutingResult;
+
+class ErrorController
 {
-    public function indexAction($id, $slug)
+    public function notFoundAction(RoutingResult $result)
     {
-        echo "Here you can buy a $slug (id: $id)";
+        header($_SERVER["SERVER_PROTOCOL"] .' 404 Not Found');
+        echo 'Error 404';
+    }
+
+    public function methodNotAllowedAction(RoutingResult $result)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] .' 405 Method Not Allowed');
+        // This header is required by RFC 2616
+        header('Allow: ' . implode(', ', $result->getAllowedMethods()));
+
+        echo 'Error 405<br>';
+        echo 'Try with one of them: ' . implode(', ', $result->getAllowedMethods());
     }
 }
