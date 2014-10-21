@@ -32,7 +32,9 @@ class Generator extends \KM\Saffron\Generator
         foreach ($this->collection as $route) {
             $result[$route->getName()] = [
                 'uri' => $route->getUri(),
+                'domain' => $route->getDomain(),
                 'defaults' => $route->getDefaults(),
+                'https' => $route->getHttps(),
             ];
         }
 

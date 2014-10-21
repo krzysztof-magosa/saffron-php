@@ -35,7 +35,7 @@ abstract class Base
         return $this->routes[$name];
     }
 
-    public function assemble($name, array $parameters = [])
+    public function assemble($name, array $parameters = [], $fullUrl = false)
     {
         $route = $this->getRoute($name);
 
@@ -49,6 +49,21 @@ abstract class Base
             $uri = str_replace('{'.$name.'}', $value, $uri);
         }
 
-        return $uri;
+        if ($fullUrl) {
+            if (null !== $route['https']) {
+                $scheme = $route['https'] ? 'https://' : 'http://';
+            } else {
+                $scheme = 'http://';
+            }
+
+            $domain = $route['domain'];
+            foreach ($values as $name => $value) {
+                $domain = str_replace('{'.$name.'}', $value, $domain);
+            }
+
+            return $scheme.$domain.$uri;
+        } else {
+            return $uri;
+        }
     }
 }

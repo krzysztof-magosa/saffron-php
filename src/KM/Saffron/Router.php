@@ -69,8 +69,8 @@ class Router
      * @param array $parameters Parameters
      * @return string Built link
      */
-    public function assemble($name, array $parameters = [])
+    public function assemble($name, array $parameters = [], $fullUrl = false)
     {
-        return $this->getUrlBuilder()->assemble($name, $parameters);
+        return $this->getUrlBuilder()->assemble($name, $parameters, $fullUrl);
     }
 }
