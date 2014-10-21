@@ -3,23 +3,28 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/krzysztof-magosa/saffron-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/krzysztof-magosa/saffron-php/?branch=master)
 [![Coverage Status](https://img.shields.io/coveralls/krzysztof-magosa/saffron-php.svg)](https://coveralls.io/r/krzysztof-magosa/saffron-php?branch=master)
 
-Router made with high performance in mind.
+Router made with high performance in mind.  
 Apache 2.0 licensed.
 
+## Support
+Current version of Saffron is 5.0.0 LTS.  
+Previous versions were testing ground, while 5.0.0 is the first version with stable API.
+
 ## Features
-* No dependencies
+* No external dependencies
 * High performance
 * Method condition support
 * Domain condition support
+* Https/non-https condition support
 * Routes with optional parameters
+* Requirements for parameters
 * Reverse routing
+* Well tested, 100% of test coverage
 
 ## Installation
 You can easily install Saffron by adding below requirement to your composer.json
-Saffron 5 is still in beta, so you need to use minimum-stability option.
 ```json
 {
-    "minimum-stability": "dev",
     "require": {
         "krzysztof-magosa/saffron": "5.*"
     }
@@ -105,4 +110,19 @@ When you omit method it takes default value 'indexAction'
 ```php
 $route->setTarget('HomeController');
 $route->setTarget('ContactController', 'emailAction');
+```
+
+## Building links
+### Building path
+1st argument is name of route.
+2nd argument is array of parameters.
+```php
+$link = $route->assemble('name', ['parameter1' => 'value1']);
+```
+
+### Building full link
+3rd parameter here means that you want full route with scheme and domain.
+For routes with https condition set to true scheme will be https, for the rest http.
+```php
+$link = $route->assemble('name', ['parameter1' => 'value1'], true);
 ```
