@@ -23,27 +23,76 @@ class RouterTest extends PHPUnit_Framework_TestCase
         return [
             [
                 'uri' => '/person/{name}/{id}',
+                'domain' => '',
+                'https' => null,
                 'defaults' => ['id' => 5],
                 'parameters' => ['name' => 'john'],
+                'fullUrl' => false,
                 'result' => '/person/john/5',
             ],
             [
                 'uri' => '/person/{name}',
+                'domain' => '',
+                'https' => null,
                 'defaults' => [],
                 'parameters' => ['name' => 'john'],
+                'fullUrl' => false,
                 'result' => '/person/john',
             ],
             [
                 'uri' => '/person/{name}',
+                'domain' => '',
+                'https' => null,
                 'defaults' => ['name' => 'john'],
                 'parameters' => [],
+                'fullUrl' => false,
                 'result' => '/person/john',
             ],
             [
                 'uri' => '/{module}/{name}',
+                'domain' => '',
+                'https' => null,
                 'defaults' => ['name' => 'john'],
                 'parameters' => ['module' => 'person'],
+                'fullUrl' => false,
                 'result' => '/person/john',
+            ],
+
+            [
+                'uri' => '/person/{name}/{id}',
+                'domain' => 'www.example.com',
+                'https' => false,
+                'defaults' => ['id' => 5],
+                'parameters' => ['name' => 'john'],
+                'fullUrl' => true,
+                'result' => 'http://www.example.com/person/john/5',
+            ],
+            [
+                'uri' => '/person/{name}',
+                'domain' => 'www.example.com',
+                'https' => true,
+                'defaults' => [],
+                'parameters' => ['name' => 'john'],
+                'fullUrl' => true,
+                'result' => 'https://www.example.com/person/john',
+            ],
+            [
+                'uri' => '/person/{name}',
+                'domain' => 'www.example.{tld}',
+                'https' => true,
+                'defaults' => ['name' => 'john', 'tld' => 'org'],
+                'parameters' => [],
+                'fullUrl' => true,
+                'result' => 'https://www.example.org/person/john',
+            ],
+            [
+                'uri' => '/{module}/{name}',
+                'domain' => '{prefix}.example.com',
+                'https' => true,
+                'defaults' => ['name' => 'john', 'prefix' => 'www'],
+                'parameters' => ['module' => 'person'],
+                'fullUrl' => true,
+                'result' => 'https://www.example.com/person/john',
             ],
         ];
     }
@@ -181,12 +230,14 @@ class RouterTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider providerAssemble
      */
-    public function testAssemble($uri, $defaults, $parameters, $result)
+    public function testAssemble($uri, $domain, $https, $defaults, $parameters, $fullUrl, $result)
     {
         $factory = new RouterFactory(
-            function ($collection) use ($uri, $defaults) {
+            function ($collection) use ($uri, $domain, $https, $defaults) {
                 $collection->route('test')
                     ->setUri($uri)
+                    ->setDomain($domain)
+                    ->setHttps($https)
                     ->setDefaults($defaults);
             }
         );
@@ -197,7 +248,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $result,
-            $router->assemble('test', $parameters)
+            $router->assemble('test', $parameters, $fullUrl)
         );
     }
 
