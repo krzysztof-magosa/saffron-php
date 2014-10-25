@@ -20,6 +20,7 @@ Saffron PHP Router
 * [Building links](#building-links)
 * [Executing controllers](#executing-controllers)
 * [Getting parameters](#getting-parameters)
+* [Example](https://github.com/krzysztof-magosa/saffron-php/tree/master/example)
 
 ## What is Saffron?
 Saffron is very fast and flexible PHP router for your application.
