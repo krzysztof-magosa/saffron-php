@@ -47,8 +47,7 @@ class Generator extends \KM\Saffron\Generator
                 '0 === strpos($uri, %s)',
                 var_export($compiled->getPrefix(), true)
             );
-        }
-        else {
+        } else {
             $conditions[] = sprintf(
                 '$uri == %s',
                 var_export($compiled->getPrefix(), true)
@@ -137,8 +136,7 @@ class Generator extends \KM\Saffron\Generator
                         implode(', ', $this->getArraysOfParameters($route))
                     )
                 );
-            }
-            else {
+            } else {
                 $this->code->append(
                     sprintf(
                         '$this->filterParameters(%s)',
@@ -146,8 +144,7 @@ class Generator extends \KM\Saffron\Generator
                     )
                 );
             }
-        }
-        else {
+        } else {
             $this->code->append('[]');
         }
 

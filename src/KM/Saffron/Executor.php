@@ -46,8 +46,7 @@ class Executor
     {
         if (is_string($controller)) {
             $this->controller = new $controller();
-        }
-        else {
+        } else {
             $this->controller = $controller;
         }
 

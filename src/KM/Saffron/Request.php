@@ -110,7 +110,7 @@ class Request
      *
      * @return \KM\Saffron\Request
      */
-    static public function createFromGlobals()
+    public static function createFromGlobals()
     {
         $instance = new static();
         $instance

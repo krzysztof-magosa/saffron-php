@@ -31,8 +31,7 @@ class RouteCompiler
 
         if (false !== $pos) {
             $length = max($pos - 1, 1);
-        }
-        else {
+        } else {
             $length = strlen($route->getUri());
         }
 
@@ -62,8 +61,7 @@ class RouteCompiler
                     $route->getRequirement($match['placeholder']),
                     $route->hasDefault($match['placeholder']) ? '?' : ''
                 );
-            }
-            else {
+            } else {
                 $regex .= preg_quote($token, '#');
             }
         }
@@ -94,8 +92,7 @@ class RouteCompiler
                     isset($match['delimiter']) ? preg_quote($match['delimiter'], '#') : '',
                     $route->hasDefault($match['placeholder']) ? '?' : ''
                 );
-            }
-            else {
+            } else {
                 $regex .= preg_quote($token, '#');
             }
         }
