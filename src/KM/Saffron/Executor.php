@@ -16,6 +16,7 @@
 namespace KM\Saffron;
 
 use KM\Saffron\RoutingResult;
+use KM\Saffron\Exception\InvalidArgument;
 
 class Executor
 {
@@ -28,6 +29,12 @@ class Executor
     public function __construct(RoutingResult $result = null)
     {
         if ($result) {
+            if (!$result->isSuccessful()) {
+                throw new InvalidArgument(
+                    'You cannot use unsuccessful RoutingResult to init Executor.'
+                );
+            }
+
             $this
                 ->setController($result->getTarget()[0])
                 ->setMethod($result->getTarget()[1])
