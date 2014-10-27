@@ -20,6 +20,8 @@ use KM\Saffron\RouteCompiled;
 
 class Route
 {
+    const DEFAULT_REQUIREMENT = '.+';
+
     protected $name;
     protected $uri;
     protected $domain;
@@ -154,7 +156,7 @@ class Route
      */
     public function getRequirement($name)
     {
-        return isset($this->requirements[$name]) ? $this->requirements[$name] : '.+';
+        return isset($this->requirements[$name]) ? $this->requirements[$name] : self::DEFAULT_REQUIREMENT;
     }
 
     /**
