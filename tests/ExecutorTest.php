@@ -208,4 +208,22 @@ class ExecutorTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Controller', $controller);
     }
+
+    /**
+     * @expectedException \KM\Saffron\Exception\InvalidArgument
+     * @expectedExceptionMessage You cannot use unsuccessful RoutingResult to init Executor.
+     */
+    public function testUnsuccessfulRoutingResult()
+    {
+        $result = new RoutingResult(
+            false,
+            false,
+            false,
+            [],
+            ['Controller', 'dispatch'],
+            []
+        );
+
+        $executor = new Executor($result);
+    }
 }
