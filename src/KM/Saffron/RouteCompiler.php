@@ -17,6 +17,7 @@ namespace KM\Saffron;
 
 use KM\Saffron\Route;
 use KM\Saffron\RouteCompiled;
+use KM\Saffron\Exception\InvalidArgument;
 
 class RouteCompiler
 {
@@ -100,12 +101,26 @@ class RouteCompiler
         return '#^'.$regex.'$#s';
     }
 
+    protected function validateRoute(Route $route)
+    {
+        if (false !== strpos($route->getUri(), '{_') || false !== strpos($route->getDomain(), '{_')) {
+            throw new InvalidArgument(
+                sprintf(
+                    'Placeholders cannot begin with _. Route: %s.',
+                    $route->getName()
+                )
+            );
+        }
+    }
+
     /**
      * @param Route $route
      * @return RouteCompiled
      */
     public function compile(Route $route)
     {
+        $this->validateRoute($route);
+
         $compiled = new RouteCompiled(
             $this->getPrefix($route),
             $this->getPrefix($route) != $route->getUri() ? $this->getUriRegex($route) : null,
