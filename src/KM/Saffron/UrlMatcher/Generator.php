@@ -82,6 +82,11 @@ class Generator extends \KM\Saffron\Generator
         $arrays = [];
         $compiled = $route->getCompiled();
 
+        $arrays[] = sprintf(
+            "['_route' => %s, '_request' => \$request]",
+            var_export($route->getName(), true)
+        );
+
         if ($route->hasDefaults()) {
             $arrays[] = $this->formatArray($route->getDefaults());
         }
@@ -128,24 +133,20 @@ class Generator extends \KM\Saffron\Generator
             ->append($this->formatArray($route->getTarget()).',');
 
         $arrays = $this->getArraysOfParameters($route);
-        if ($arrays) {
-            if (count($arrays) >= 2) {
-                $this->code->append(
-                    sprintf(
-                        '$this->filterParameters(array_replace(%s))',
-                        implode(', ', $this->getArraysOfParameters($route))
-                    )
-                );
-            } else {
-                $this->code->append(
-                    sprintf(
-                        '$this->filterParameters(%s)',
-                        $this->getArraysOfParameters($route)[0]
-                    )
-                );
-            }
+        if (count($arrays) >= 2) {
+            $this->code->append(
+                sprintf(
+                    '$this->filterParameters(array_replace(%s))',
+                    implode(', ', $this->getArraysOfParameters($route))
+                )
+            );
         } else {
-            $this->code->append('[]');
+            $this->code->append(
+                sprintf(
+                    '$this->filterParameters(%s)',
+                    $this->getArraysOfParameters($route)[0]
+                )
+            );
         }
 
         $this->code->append(');');

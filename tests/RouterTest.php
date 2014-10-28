@@ -100,25 +100,25 @@ class RouterTest extends PHPUnit_Framework_TestCase
     public function providerMatch()
     {
         return [
-            ['/home', 'www.test99.com', 'GET', false, false, false, [], ['route' => 'test99']],
-            ['/home', 'www.test1.com', 'GET', false, false, false, [], ['route' => 'test1']],
-            ['/home', 'www.test1.com', 'POST', false, false, false, [], ['route' => 'test2']],
+            ['/home', 'www.test99.com', 'GET', false, false, false, [], ['_route' => 'test99']],
+            ['/home', 'www.test1.com', 'GET', false, false, false, [], ['_route' => 'test1']],
+            ['/home', 'www.test1.com', 'POST', false, false, false, [], ['_route' => 'test2']],
 
-            ['/person/john', 'www.test3.com', 'GET', null, false, false, [], ['route' => 'test3', 'slug' => 'john']],
-            ['/person', 'www.test3.com', 'GET', false, false, false, [], ['route' => 'test3', 'slug' => 'jack']],
+            ['/person/john', 'www.test3.com', 'GET', null, false, false, [], ['_route' => 'test3', 'slug' => 'john']],
+            ['/person', 'www.test3.com', 'GET', false, false, false, [], ['_route' => 'test3', 'slug' => 'jack']],
 
-            ['/account', 'www.test4.com', 'GET', true, false, false, [], ['route' => 'test4a']],
-            ['/account', 'www.test4.com', 'GET', false, false, false, [], ['route' => 'test4b']],
+            ['/account', 'www.test4.com', 'GET', true, false, false, [], ['_route' => 'test4a']],
+            ['/account', 'www.test4.com', 'GET', false, false, false, [], ['_route' => 'test4b']],
 
-            ['/info/5', 'www.test5.com', 'GET', false, false, false, [], ['route' => 'test5a', 'id' => 5]],
-            ['/info/news', 'www.test5.com', 'GET', false, false, false, [], ['route' => 'test5b', 'slug' => 'news']],
+            ['/info/5', 'www.test5.com', 'GET', false, false, false, [], ['_route' => 'test5a', 'id' => 5]],
+            ['/info/news', 'www.test5.com', 'GET', false, false, false, [], ['_route' => 'test5b', 'slug' => 'news']],
 
             ['/methods/get', 'www.test6.com', 'POST', false, false, true, ['GET'], []],
             ['/not-found', 'www.test7.com', 'GET', false, true, false, [], []],
 
             ['/test100', 'www.test100.com', 'GET', false, false, false, [], []],
 
-            ['/test111/555', 'www.test111.com', 'GET', false, false, false, [], ['id1' => 555, 'id2' => 222, 'prefix' => 'www']],
+            ['/test111/555', 'www.test111.com', 'GET', false, false, false, [], ['_route' => 'test111', 'id1' => '555', 'id2' => 222, 'prefix' => 'www']],
         ];
     }
 
@@ -224,7 +224,10 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResourceNotFound, $result->isResourceNotFound());
         $this->assertEquals($expectedMethodNotAllowed, $result->isMethodNotAllowed());
         $this->assertEquals($expectedAllowedMethods, $result->getAllowedMethods());
-        $this->assertEquals($expectedParameters, $result->getParameters());
+
+        foreach ($expectedParameters as $name => $value) {
+            $this->assertEquals($value, $result->getParameters()[$name]);
+        }
     }
 
     /**
