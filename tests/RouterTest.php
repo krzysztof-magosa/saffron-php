@@ -68,6 +68,15 @@ class RouterTest extends PHPUnit_Framework_TestCase
                 'result' => 'http://www.example.com/person/john/5',
             ],
             [
+                'uri' => '/person/{name}/{id}',
+                'domain' => 'www.example.com',
+                'https' => null,
+                'defaults' => ['id' => 5],
+                'parameters' => ['name' => 'john'],
+                'fullUrl' => true,
+                'result' => 'http://www.example.com/person/john/5',
+            ],
+            [
                 'uri' => '/person/{name}',
                 'domain' => 'www.example.com',
                 'https' => true,
