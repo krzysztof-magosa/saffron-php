@@ -17,8 +17,12 @@ namespace Site\Controller;
 
 class ProductController
 {
-    public function indexAction($id, $slug)
+    public function indexAction($id, $slug, $_route, $_request)
     {
-        echo "Here you can buy a $slug (id: $id)";
+        echo "Here you can buy a $slug (id: $id)<br>";
+        echo "<pre>";
+        var_dump($_route);
+        var_dump($_request);
+        echo "</pre>";
     }
 }

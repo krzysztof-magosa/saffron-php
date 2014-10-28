@@ -44,7 +44,6 @@ return function ($collection) {
 
     $collection->route('home')
         ->setUri('/')
-        ->setMethod(['POST', 'PUT'])
         ->setTarget('Site\Controller\HomeController');
 
     $collection->route('product')
