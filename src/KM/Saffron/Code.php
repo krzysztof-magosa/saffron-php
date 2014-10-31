@@ -51,7 +51,7 @@ class Code
                 $result .= str_repeat(' ', $indent);
                 $result .= $line."\n";
                 $indent += $this->tabSize;
-            } elseif (preg_match('#}$#', $line) || preg_match('#^\);$#', $line)) {
+            } elseif (preg_match('#(}$|^\);$)#', $line)) {
                 $indent = max(0, $indent - $this->tabSize);
                 $indent = max($indent, 0);
                 $result .= str_repeat(' ', $indent);
