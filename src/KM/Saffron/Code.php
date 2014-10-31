@@ -36,7 +36,7 @@ class Code
     }
 
     /**
-     * @return strign Formatted code
+     * @return string Formatted code
      */
     public function __toString()
     {

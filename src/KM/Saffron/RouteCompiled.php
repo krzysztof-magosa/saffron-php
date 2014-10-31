@@ -21,6 +21,11 @@ class RouteCompiled
     protected $uriRegex;
     protected $domainRegex;
 
+    /**
+     * @param string $prefix
+     * @param string $uriRegex
+     * @param string $domainRegex
+     */
     public function __construct($prefix, $uriRegex, $domainRegex)
     {
         $this->prefix = $prefix;

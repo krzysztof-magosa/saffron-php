@@ -84,6 +84,11 @@ class RouterFactory
         return $this->classSuffix;
     }
 
+    /**
+     * @param string $className
+     * @param \Closure $generator
+     * @return object
+     */
     protected function createInstance($className, \Closure $generator)
     {
         $cacheFile = $this->getCacheDir().'/'.$className.'.php';
