@@ -16,7 +16,6 @@
 namespace KM\Saffron\UrlMatcher;
 
 use KM\Saffron\RoutesCollection;
-use KM\Saffron\RouteCompiler;
 use KM\Saffron\Route;
 use KM\Saffron\Code;
 
@@ -220,6 +219,9 @@ class Generator extends \KM\Saffron\Generator
         $this->code->append('}');
     }
 
+    /**
+     * @param string $className
+     */
     protected function generateHeader($className)
     {
         $this->code->append(

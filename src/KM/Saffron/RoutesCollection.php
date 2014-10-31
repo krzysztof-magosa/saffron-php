@@ -16,7 +16,6 @@
 namespace KM\Saffron;
 
 use KM\Saffron\Exception\RouteAlreadyRegistered;
-use KM\Saffron\Exception\EmptyCollection;
 use KM\Saffron\Collection;
 
 class RoutesCollection extends Collection
@@ -26,7 +25,7 @@ class RoutesCollection extends Collection
      * Also looks for duplicated names.
      *
      * @param string $name Name of route
-     * @return RoutesCollection
+     * @return Route
      */
     public function route($name)
     {

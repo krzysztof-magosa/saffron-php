@@ -21,11 +21,17 @@ abstract class Base
 {
     protected $routes;
 
+    /**
+     * @param string $name
+     */
     protected function hasRoute($name)
     {
         return isset($this->routes[$name]);
     }
 
+    /**
+     * @param string $name
+     */
     protected function getRoute($name)
     {
         if (!$this->hasRoute($name)) {
@@ -35,6 +41,11 @@ abstract class Base
         return $this->routes[$name];
     }
 
+    /**
+     * @param string $name
+     * @param array $parameters
+     * @param boolean $fullUrl
+     */
     public function assemble($name, array $parameters = [], $fullUrl = false)
     {
         $route = $this->getRoute($name);

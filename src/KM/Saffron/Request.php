@@ -96,7 +96,8 @@ class Request
 
     /**
      * Sets info whether connection is secured by https
-     *
+     * 
+     * @param boolean $https
      * @return \KM\Saffron\Request
      */
     public function setHttps($https)
