@@ -84,27 +84,35 @@ class RouterFactory
         return $this->classSuffix;
     }
 
-    /**
-     * @return UrlMatcher\Base
-     */
-    public function getUrlMatcher()
+    protected function createInstance($className, \Closure $generator)
     {
-        $className = 'KM_Saffron_UrlMatcher_'.$this->getClassSuffix();
         $cacheFile = $this->getCacheDir().'/'.$className.'.php';
 
         if (!is_readable($cacheFile) || $this->debug) {
-            $generator = new UrlMatcher\Generator($this->getCollection());
-
             file_put_contents(
                 $cacheFile,
-                $generator->generate($className),
+                $generator($className),
                 LOCK_EX
             );
         }
 
         require_once $cacheFile;
 
-        return new $className();
+        return new $className;
+    }
+
+    /**
+     * @return UrlMatcher\Base
+     */
+    public function getUrlMatcher()
+    {
+        return $this->createInstance(
+            'KM_Saffron_UrlMatcher_'.$this->getClassSuffix(),
+            function ($className) {
+                $generator = new UrlMatcher\Generator($this->getCollection());
+                return $generator->generate($className);
+            }
+        );
     }
 
     /**
@@ -112,22 +120,13 @@ class RouterFactory
      */
     public function getUrlBuilder()
     {
-        $className = 'KM_Saffron_UrlBuilder_'.$this->getClassSuffix();
-        $cacheFile = $this->getCacheDir().'/'.$className.'.php';
-
-        if (!is_readable($cacheFile) || $this->debug) {
-            $generator = new UrlBuilder\Generator($this->getCollection());
-
-            file_put_contents(
-                $cacheFile,
-                $generator->generate($className),
-                LOCK_EX
-            );
-        }
-
-        require_once $cacheFile;
-
-        return new $className();
+        return $this->createInstance(
+            'KM_Saffron_UrlBuilder_'.$this->getClassSuffix(),
+            function ($className) {
+                $generator = new UrlBuilder\Generator($this->getCollection());
+                return $generator->generate($className);
+            }
+        );
     }
 
     /**
