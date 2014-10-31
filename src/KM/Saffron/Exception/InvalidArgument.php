@@ -15,6 +15,6 @@
  */
 namespace KM\Saffron\Exception;
 
-class InvalidArgument extends \LogicException
+class InvalidArgument extends Exception
 {
 }

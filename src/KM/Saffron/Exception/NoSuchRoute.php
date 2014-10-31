@@ -15,6 +15,6 @@
  */
 namespace KM\Saffron\Exception;
 
-class NoSuchRoute extends \LogicException
+class NoSuchRoute extends Exception
 {
 }

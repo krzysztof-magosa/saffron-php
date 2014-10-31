@@ -15,6 +15,6 @@
  */
 namespace KM\Saffron\Exception;
 
-class EmptyCollection extends \LogicException
+class EmptyCollection extends Exception
 {
 }
