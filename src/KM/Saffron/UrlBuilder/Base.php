@@ -42,6 +42,35 @@ abstract class Base
     }
 
     /**
+     * @param string $string
+     * @param array $parameters
+     * @return string
+     */
+    protected function fillPlaceholders($string, array $parameters = [])
+    {
+        foreach ($parameters as $name => $value) {
+            $string = str_replace('{'.$name.'}', $value, $string);
+        }
+
+        return $string;
+    }
+
+    /**
+     * @param boolean $https
+     * @return string
+     */
+    protected function getScheme($https)
+    {
+        if (null !== $https) {
+            $scheme = $https ? 'https://' : 'http://';
+        } else {
+            $scheme = 'http://';
+        }
+
+        return $scheme;
+    }
+
+    /**
      * @param string $name
      * @param array $parameters
      * @param boolean $fullUrl
@@ -49,32 +78,16 @@ abstract class Base
     public function assemble($name, array $parameters = [], $fullUrl = false)
     {
         $route = $this->getRoute($name);
+        $values = array_replace($route['defaults'], $parameters);
 
-        $values = array_replace(
-            $route['defaults'],
-            $parameters
-        );
-
-        $uri = $route['uri'];
-        foreach ($values as $name => $value) {
-            $uri = str_replace('{'.$name.'}', $value, $uri);
-        }
-
+        $link = '';
         if ($fullUrl) {
-            if (null !== $route['https']) {
-                $scheme = $route['https'] ? 'https://' : 'http://';
-            } else {
-                $scheme = 'http://';
-            }
-
-            $domain = $route['domain'];
-            foreach ($values as $name => $value) {
-                $domain = str_replace('{'.$name.'}', $value, $domain);
-            }
-
-            return $scheme.$domain.$uri;
-        } else {
-            return $uri;
+            $link .= $this->getScheme($route['https']);
+            $link .= $this->fillPlaceholders($route['domain'], $values);
         }
+
+        $link .= $this->fillPlaceholders($route['uri'], $values);
+
+        return $link;
     }
 }
