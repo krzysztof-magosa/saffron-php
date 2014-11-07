@@ -39,16 +39,30 @@ class RoutesCollection extends Collection
     }
 
     /**
-     * Groups routes by domain
+     * Groups routes by domain keeping the order
      * @mixed RoutesCollection
      */
     public function groupByDomain()
     {
-        return $this->groupBy(
-            function ($route) {
-                return sha1($route->getDomain());
+        $class = get_called_class();
+        $collection = new $class();
+        $index = 0;
+        $lastDomain = null;
+
+        foreach ($this as $route) {
+            if ($route->getDomain() !== $lastDomain) {
+                $lastDomain = $route->getDomain();
+                $index++;
             }
-        );
+
+            if (!isset($collection[$index])) {
+                $collection[$index] = new $class();
+            }
+
+            $collection[$index]->append($route);
+        }
+
+        return $collection;
     }
 
     /**
