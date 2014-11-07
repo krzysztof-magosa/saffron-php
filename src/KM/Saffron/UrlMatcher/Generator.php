@@ -172,7 +172,7 @@ class Generator extends \KM\Saffron\Generator
             ->append('$uri = $request->getUri();')
             ->append('$allowedMethods = [];');
 
-        if ($this->collection->hasMethod()) {
+        if ($this->collection->hasDomain()) {
             $this->code->append('$domain = $request->getDomain();');
         }
 
