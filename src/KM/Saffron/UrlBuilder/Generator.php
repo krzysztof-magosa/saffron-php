@@ -51,10 +51,7 @@ use KM\Saffron\UrlBuilder\Base;
 
 class $className extends Base
 {
-    public function __construct()
-    {
-        \$this->routes = $routes;
-    }
+    protected \$routes = $routes;
 }
 
 EOB;
