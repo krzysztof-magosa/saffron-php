@@ -194,7 +194,7 @@ class Route
      */
     public function hasDefault($name)
     {
-        return isset($this->defaults[$name]);
+        return array_key_exists($name, $this->defaults);
     }
 
     /**
