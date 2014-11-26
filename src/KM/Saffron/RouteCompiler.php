@@ -85,7 +85,7 @@ class RouteCompiler
 
         $regex = '';
         foreach ($tokens as $token) {
-            if (preg_match('#^\{(?P<placeholder>\w+)\}(?P<delimiter>.)?$#s', $token, $match)) {
+            if (preg_match('#^\{(?P<placeholder>\w+)\}(?P<delimiter>.)?$#us', $token, $match)) {
                 $regex .= sprintf(
                     '((?P<%s>%s)%s)%s',
                     preg_quote($match['placeholder'], '#'),
