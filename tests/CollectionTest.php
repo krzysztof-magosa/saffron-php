@@ -17,6 +17,10 @@ use KM\Saffron\Collection;
 
 class MyCollection extends Collection
 {
+    public function groupBy(\Closure $func)
+    {
+        return parent::groupBy($func);
+    }
 }
 
 class Entity
@@ -57,5 +61,30 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $collection['key91'] = new \stdClass;
 
         $this->assertEquals(['key1', 'key51', 'key91'], $collection->getKeys());
+    }
+
+    public function testGroupBy()
+    {
+        $collection = new MyCollection();
+        $collection[] = (object)['id' => 1];
+        $collection[] = (object)['id' => 2];
+        $collection[] = (object)['id' => 3];
+        $collection[] = (object)['id' => 4];
+
+        $grouped = $collection->groupBy(
+            function ($item) {
+                return ($item->id % 2);
+            }
+        );
+
+        $this->assertEquals(2, $grouped->count());
+        $this->assertEquals(2, $grouped[0]->count());
+        $this->assertEquals(2, $grouped[1]->count());
+
+        $this->assertEquals(2, $grouped[0][0]->id);
+        $this->assertEquals(4, $grouped[0][1]->id);
+
+        $this->assertEquals(1, $grouped[1][0]->id);
+        $this->assertEquals(3, $grouped[1][1]->id);
     }
 }
