@@ -243,7 +243,8 @@ $executor
         function ($controller, $method, $parameters) {
             // do something after calling action
         }
-    )
+    );
+
 $executor->fire();
 ```
 
