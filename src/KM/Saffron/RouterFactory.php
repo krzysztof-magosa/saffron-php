@@ -103,6 +103,10 @@ class RouterFactory
 
         require_once $cacheFile;
 
+        if ($this->debug) {
+            unlink($cacheFile);
+        }
+
         return new $className;
     }
 
