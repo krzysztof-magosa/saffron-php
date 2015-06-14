@@ -113,11 +113,27 @@ class Request
      */
     public static function createFromGlobals()
     {
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $domain = $_SERVER['HTTP_HOST'];
+        } elseif (isset($_SERVER['SERVER_NAME'])) {
+            $domain = $_SERVER['SERVER_NAME'];
+        }
+        else {
+            $domain = '';
+        }
+        
         $instance = new static();
         $instance
-            ->setUri(explode('?', $_SERVER['REQUEST_URI'])[0])
-            ->setMethod($_SERVER['REQUEST_METHOD'])
-            ->setDomain($_SERVER['HTTP_HOST'])
+            ->setUri(
+                explode(
+                    '?',
+                    isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : ''
+                )[0]
+            )
+            ->setMethod(
+                isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET'
+            )
+            ->setDomain($domain)
             ->setHttps(
                 !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
             );

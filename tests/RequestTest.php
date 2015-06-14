@@ -78,4 +78,21 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $request = Request::createFromGlobals();
         $this->assertEquals(false, $request->getHttps());
     }
+
+    public function testDomainFromGlobals()
+    {
+        $this->assertEquals('', Request::createFromGlobals()->getDomain());
+
+        $_SERVER['SERVER_NAME'] = 'example.com';
+        $this->assertEquals(
+            'example.com',
+            Request::createFromGlobals()->getDomain()
+        );
+
+        $_SERVER['HTTP_HOST'] = 'more.important.com';
+        $this->assertEquals(
+            'more.important.com',
+            Request::createFromGlobals()->getDomain()
+        );
+    }
 }
