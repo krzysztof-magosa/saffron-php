@@ -19,5 +19,8 @@
         "psr-0": {
             "KM\\Saffron\\": "src/"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit tests"
     }
 }
