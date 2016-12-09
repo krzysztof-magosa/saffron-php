@@ -27,7 +27,9 @@ Saffron is very fast and flexible PHP router for your application.
 
 ## Version
 The current version of Saffron is 5 LTS.  
-It will be maintained at least till 31st December of 2016.
+It will be maintained at least till 31st December of 2016.  
+I'm not PHP developer anymore so be warned that this library
+may be no longer supported/extended.
 
 ## Features
 * No external dependencies
