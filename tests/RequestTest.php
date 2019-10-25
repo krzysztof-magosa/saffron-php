@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 use \KM\Saffron\Request;
+use PHPUnit\Framework\TestCase;
 
-class RequestTest extends PHPUnit_Framework_TestCase
+class RequestTest extends TestCase
 {
     public function testDomain()
     {

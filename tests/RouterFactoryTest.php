@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 use KM\Saffron\RouterFactory;
+use PHPUnit\Framework\TestCase;
 
-class RoutesFactoryTest extends PHPUnit_Framework_TestCase
+class RoutesFactoryTest extends TestCase
 {
     public function testCacheDir()
     {

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 use KM\Saffron\Collection;
+use KM\Saffron\Exception\EmptyCollection;
+use PHPUnit\Framework\TestCase;
 
 class MyCollection extends Collection
 {
@@ -32,10 +34,10 @@ class Entity
     }
 }
 
-class CollectionTest extends PHPUnit_Framework_TestCase
+class CollectionTest extends TestCase
 {
     /**
-     * @expectedException \KM\Saffron\Exception\EmptyCollection
+     * @expectedException EmptyCollection
      * @expectedExceptionMessage You cannot fetch first element of empty collection.
      */
     public function testFirstOnEmptyCollection()

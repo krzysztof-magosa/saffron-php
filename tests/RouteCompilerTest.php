@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-use KM\Saffron\Route;
 
-class RouteCompilerTest extends PHPUnit_Framework_TestCase
+use KM\Saffron\Exception\InvalidArgument;
+use KM\Saffron\Route;
+use PHPUnit\Framework\TestCase;
+
+class RouteCompilerTest extends TestCase
 {
     /**
-     * @expectedException \KM\Saffron\Exception\InvalidArgument
+     * @expectedException InvalidArgument
      * @expectedExceptionMessage Placeholders cannot begin with _. Route: route.
      */
     public function testInvalidPlaceholderInUri()
@@ -30,7 +33,7 @@ class RouteCompilerTest extends PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException \KM\Saffron\Exception\InvalidArgument
+     * @expectedException InvalidArgument
      * @expectedExceptionMessage Placeholders cannot begin with _. Route: route.
      */
     public function testInvalidPlaceholderInDomain()
