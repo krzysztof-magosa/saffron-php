@@ -10,7 +10,7 @@ before_script:
   - mkdir -p build/logs
 
 script:
-  - php vendor/bin/phpunit --coverage-clover build/logs/clover.xml --globals-backup --bootstrap ./tests/bootstrap.php ./tests/
+  - php vendor/bin/phpunit
 
 after_script:
   - php vendor/bin/php-coveralls

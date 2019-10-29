@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true" backupGlobals="true">
+  <testsuites>
+    <testsuite name="Saffron">
+      <directory>tests/</directory>
+    </testsuite>
+  </testsuites>
+  <logging>
+    <log type="coverage-clover" target="./build/logs/clover.xml"/>
+  </logging>
+  <filter>
+  <whitelist processUncoveredFilesFromWhitelist="true">
+    <directory suffix=".php">src/</directory>
+  </whitelist>
+</filter>
+</phpunit>
+
