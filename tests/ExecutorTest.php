@@ -15,6 +15,7 @@
  */
 use \KM\Saffron\RoutingResult;
 use \KM\Saffron\Executor;
+use PHPUnit\Framework\TestCase;
 
 class Controller
 {
@@ -26,7 +27,7 @@ class Controller
     }
 }
 
-class ExecutorTest extends PHPUnit_Framework_TestCase
+class ExecutorTest extends TestCase
 {
     public function testByName()
     {

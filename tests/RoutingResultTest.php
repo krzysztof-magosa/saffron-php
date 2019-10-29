@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 use KM\Saffron\RoutingResult;
+use PHPUnit\Framework\TestCase;
 
-class RoutingResultTest extends PHPUnit_Framework_TestCase
+class RoutingResultTest extends TestCase
 {
     public function providerBoolean()
     {

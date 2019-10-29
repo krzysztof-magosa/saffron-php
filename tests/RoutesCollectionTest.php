@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-use KM\Saffron\RoutesCollection;
 
-class RoutesCollectionTest extends PHPUnit_Framework_TestCase
+use KM\Saffron\Exception\RouteAlreadyRegistered;
+use KM\Saffron\RoutesCollection;
+use PHPUnit\Framework\TestCase;
+
+class RoutesCollectionTest extends TestCase
 {
     /**
-     * @expectedException \KM\Saffron\Exception\RouteAlreadyRegistered
+     * @expectedException RouteAlreadyRegistered
      * @expectedExceptionMessage Route with name home is already registered
      */
     public function testDuplicateOfNamedRoute()
