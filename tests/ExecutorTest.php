@@ -210,10 +210,6 @@ class ExecutorTest extends TestCase
         $this->assertInstanceOf('Controller', $controller);
     }
 
-    /**
-     * @expectedException \KM\Saffron\Exception\InvalidArgument
-     * @expectedExceptionMessage You cannot use unsuccessful RoutingResult to init Executor.
-     */
     public function testUnsuccessfulRoutingResult()
     {
         $result = new RoutingResult(
@@ -225,6 +221,8 @@ class ExecutorTest extends TestCase
             []
         );
 
+        $this->expectException(\KM\Saffron\Exception\InvalidArgument::class);
+        $this->expectExceptionMessage("You cannot use unsuccessful RoutingResult to init Executor.");
         $executor = new Executor($result);
     }
 }
