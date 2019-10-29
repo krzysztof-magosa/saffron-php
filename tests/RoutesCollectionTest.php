@@ -20,16 +20,14 @@ use PHPUnit\Framework\TestCase;
 
 class RoutesCollectionTest extends TestCase
 {
-    /**
-     * @expectedException RouteAlreadyRegistered
-     * @expectedExceptionMessage Route with name home is already registered
-     */
     public function testDuplicateOfNamedRoute()
     {
         $collection = new RoutesCollection();
         $collection->route('home')
             ->setUri('/');
 
+        $this->expectException(RouteAlreadyRegistered::class);
+        $this->expectExceptionMessage("Route with name home is already registered");
         $collection->route('home')
             ->setUri('/home');
     }

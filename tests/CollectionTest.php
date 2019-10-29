@@ -36,12 +36,10 @@ class Entity
 
 class CollectionTest extends TestCase
 {
-    /**
-     * @expectedException EmptyCollection
-     * @expectedExceptionMessage You cannot fetch first element of empty collection.
-     */
     public function testFirstOnEmptyCollection()
     {
+        $this->expectException(EmptyCollection::class);
+        $this->expectExceptionMessage("You cannot fetch first element of empty collection.");
         $collection = new MyCollection();
         $collection->first();
     }

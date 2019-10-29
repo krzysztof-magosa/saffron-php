@@ -20,26 +20,22 @@ use PHPUnit\Framework\TestCase;
 
 class RouteCompilerTest extends TestCase
 {
-    /**
-     * @expectedException InvalidArgument
-     * @expectedExceptionMessage Placeholders cannot begin with _. Route: route.
-     */
     public function testInvalidPlaceholderInUri()
     {
         $route = new Route('route');
         $route->setUri('/{_name}');
+        $this->expectException(InvalidArgument::class);
+        $this->expectExceptionMessage("Placeholders cannot begin with _. Route: route.");
         $route->getCompiled();
     }
 
 
-    /**
-     * @expectedException InvalidArgument
-     * @expectedExceptionMessage Placeholders cannot begin with _. Route: route.
-     */
     public function testInvalidPlaceholderInDomain()
     {
         $route = new Route('route');
         $route->setDomain('{_name}.example.com');
+        $this->expectException(InvalidArgument::class);
+        $this->expectExceptionMessage("Placeholders cannot begin with _. Route: route.");
         $route->getCompiled();
     }
 }

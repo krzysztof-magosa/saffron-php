@@ -265,10 +265,6 @@ class RouterTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \KM\Saffron\Exception\NoSuchRoute
-     * @expectedExceptionMessage There is no route home.
-     */
     public function testAssembleNoSuchRoute()
     {
         $factory = new RouterFactory(
@@ -282,6 +278,8 @@ class RouterTest extends TestCase
             ->setDebug(true)
             ->build();
 
+        $this->expectException(\KM\Saffron\Exception\NoSuchRoute::class);
+        $this->expectExceptionMessage("There is no route home.");
         $this->assertEquals('/contact/km', $router->assemble('home'));
     }
 }
