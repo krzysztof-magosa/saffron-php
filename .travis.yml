@@ -14,7 +14,7 @@ before_script:
   - mkdir -p build/logs
 
 script:
-  - phpunit --coverage-clover build/logs/clover.xml --bootstrap ./tests/bootstrap.php ./tests/
+  - php vendor/bin/phpunit --coverage-clover build/logs/clover.xml --globals-backup --bootstrap ./tests/bootstrap.php ./tests/
 
 after_script:
   - if [[ "`php --version`" != *HipHop* ]] ; then php vendor/bin/coveralls -v ; fi
